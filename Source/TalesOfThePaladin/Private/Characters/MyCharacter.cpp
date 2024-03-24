@@ -20,9 +20,16 @@
 #include "Widgets/SpellSwitchWidget.h" 
 #include "Components/Image.h"
 
+//Attributes
+#include "GameFramework/CharacterMovementComponent.h"
+
 AMyCharacter::AMyCharacter() // Defaults
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Movement attributes
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = 200.f;
 
 	// Collision settings - Make sure custom object type is "MainCharacter"
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -108,8 +115,8 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
-	const bool Charge = InputValue.Get<bool>();
-	if (Charge)
+	const bool Aim = InputValue.Get<bool>();
+	if (Aim)
 	{
 		if (MyCharacterAnimInstance && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
 		{
