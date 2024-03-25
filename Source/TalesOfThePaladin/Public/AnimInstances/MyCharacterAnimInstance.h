@@ -32,13 +32,19 @@ protected:
 	float CharacterDirection{};
 
 	/*
-		Offsets
+		OFFSETS
 	*/
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CharacterPitch{};
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CharacterYaw{};
+
+	/*
+		COMBAT
+	*/
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsAiming{};
 
 private:
 

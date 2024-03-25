@@ -36,6 +36,7 @@ protected:
 	void Move(const FInputActionValue& InputValue);
 	void Look(const FInputActionValue& InputValue);
 	void Aim(const FInputActionValue& InputValue);
+	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
@@ -64,9 +65,6 @@ protected:
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsAiming{};
 
 	/*
 		OFFSET
@@ -136,7 +134,7 @@ private:
 	float InterptYaw{};
 
 	FRotator StartingRotation{};
-	const float TurnInPlaceLimit{ 45.f };
+	const float TurnInPlaceLimit{ 60.f };
 	void TurnInPlace(float DeltaTime);
 
 	/*
@@ -144,8 +142,15 @@ private:
 	*/
 	void UseControllerYaw(float DeltaTime);
 
+	/*
+		COMBAT
+	*/
+
+	bool bIsAiming{}; 
+
 public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
+	const bool GetAimState() const { return bIsAiming; }
 };

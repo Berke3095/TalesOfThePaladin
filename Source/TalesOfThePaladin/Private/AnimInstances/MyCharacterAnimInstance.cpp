@@ -39,5 +39,6 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		// Getting delta rotations for offset
 		CharacterYaw = MyCharacter->GetCharacterYaw();
 		CharacterPitch = MyCharacter->GetCharacterPitch();
+		bIsAiming = MyCharacter->GetAimState();
 	}
 }

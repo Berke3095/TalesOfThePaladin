@@ -118,13 +118,16 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 	const bool Aim = InputValue.Get<bool>();
 	if (Aim)
 	{
-		if (MyCharacterAnimInstance && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
-		{
-			bIsAiming = true;
-			PlayAnimMontage(SpellCastMontage);
-		}
-		else { bIsAiming = false; }
+		bIsAiming = true; 
+		GetCharacterMovement()->MaxWalkSpeed = 200.f; 
+		
 	}
+}
+
+void AMyCharacter::DropAim()
+{
+	bIsAiming = false;
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
 
 void AMyCharacter::Attack(const FInputActionValue& InputValue)
@@ -366,10 +369,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AMyCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
-		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
+		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 	}
 }
 
