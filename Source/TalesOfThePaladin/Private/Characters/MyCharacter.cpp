@@ -69,6 +69,9 @@ void AMyCharacter::BeginPlay()
 
 	// Get reference for mycharacter animinstance 
 	MyCharacterAnimInstance = Cast<UMyCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+
+	RightProjectileSocket = GetMesh()->GetSocketByName(FName("RightProjectileSocket")); //Getting socket by name   
+	LeftProjectileSocket = GetMesh()->GetSocketByName(FName("LeftProjectileSocket")); //Getting socket by name   
 }
 
 void AMyCharacter::Tick(float DeltaTime)
@@ -285,12 +288,11 @@ void AMyCharacter::ResetSpellSwitchWidget() // Reset widget if wrong buttons pre
 /*
 	SPELLS
 */
-void AMyCharacter::SpawnProjectile()
+void AMyCharacter::SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket)
 {
-	const USkeletalMeshSocket* ProjectileSocket = GetMesh()->GetSocketByName(FName("ProjectileSocket")); //Getting socket by name
-	if (ProjectileSocket)
+	if (SpawnSocket)
 	{
-		FTransform ProjectileSocketTransform = ProjectileSocket->GetSocketTransform(GetMesh()); // Getting the transform of socket 
+		FTransform ProjectileSocketTransform = SpawnSocket->GetSocketTransform(GetMesh()); // Getting the transform of socket 
 		if (ProjectileClass[ChosenSkill])
 		{
 			UWorld* World = GetWorld();

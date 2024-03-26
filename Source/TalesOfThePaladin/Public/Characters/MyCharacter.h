@@ -15,6 +15,9 @@ class USpellSwitchWidget;
 // For images
 class UImage;
 
+// Getting skeletal mesh socket
+class USkeletalMeshSocket;
+
 UCLASS()
 class TALESOFTHEPALADIN_API AMyCharacter : public ACharacter
 {
@@ -60,7 +63,13 @@ protected:
 	TArray<TSubclassOf<class AProjectile>> ProjectileClass{};
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void SpawnProjectile();
+	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
+
+	// Projectile sockets
+	UPROPERTY(BlueprintReadOnly) 
+	const USkeletalMeshSocket* RightProjectileSocket {};
+	UPROPERTY(BlueprintReadOnly) 
+	const USkeletalMeshSocket* LeftProjectileSocket {};
 
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
