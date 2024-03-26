@@ -17,7 +17,6 @@ public:
 private:
 
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaTime) override;
 
 	/*
@@ -39,7 +38,7 @@ private:
 		ON HIT EFFECTS
 	*/
 	UPROPERTY(EditDefaultsOnly) // Projectile explosion
-	class UParticleSystem* ProjectileExplosion{};
+	class UParticleSystem* ProjectileExplosionParticle{};
 	UPROPERTY(EditDefaultsOnly) // Projectile explosion sound
 	USoundCue* ProjectileExplosionSound{};
 	class UAudioComponent* ProjectileAudioComponent{};

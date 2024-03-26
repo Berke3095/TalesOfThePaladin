@@ -56,17 +56,6 @@ void AProjectile::BeginPlay()
 	}
 }
 
-void AProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-
-	if (ProjectileAudioComponent)
-	{
-		ProjectileAudioComponent->Stop();
-		ProjectileAudioComponent->DestroyComponent();
-	}
-}
-
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -80,10 +69,10 @@ void AProjectile::Tick(float DeltaTime)
 // Hit actions
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (ProjectileExplosion)
+	if (ProjectileExplosionParticle)
 	{
 		FRotator RotateToProjectile = (GetActorLocation() - Hit.ImpactPoint).Rotation(); // Rotate the explosion effect towards projectile
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ProjectileExplosion, Hit.ImpactPoint, RotateToProjectile); // Explosion effect at hit location
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ProjectileExplosionParticle, Hit.ImpactPoint, RotateToProjectile); // Explosion effect at hit location
 	}
 	if (ProjectileExplosionSound)
 	{
@@ -93,6 +82,16 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	{
 		ProjectileAudioComponent->Stop();
 		ProjectileAudioComponent->DestroyComponent();
+
+		if (ProjectileAudioComponent->IsPendingKill())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Projectile Audio Component Destroyed Successfully"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Projectile Audio Component NOT Destroyed"));
+		}
+
 	}
 	Destroy();
 }
