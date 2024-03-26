@@ -29,9 +29,9 @@ private:
 		COMPONENTS
 	*/
 	UPROPERTY(EditDefaultsOnly) // Box collision as root
-		class UBoxComponent* BoxComponent{};
+	class UBoxComponent* BoxComponent{};
 	UPROPERTY(EditDefaultsOnly) // Projectile move
-		class UProjectileMovementComponent* ProjectileMovementComponent{};
+	class UProjectileMovementComponent* ProjectileMovementComponent{};
 	// Combat class variable
 	class UCombat* CombatComponent{};
 
@@ -39,13 +39,13 @@ private:
 		ON HIT EFFECTS
 	*/
 	UPROPERTY(EditDefaultsOnly) // Projectile explosion
-		class UParticleSystem* ProjectileExplosion{};
+	class UParticleSystem* ProjectileExplosion{};
 	UPROPERTY(EditDefaultsOnly) // Projectile explosion sound
-		USoundCue* ProjectileExplosionSound{};
+	USoundCue* ProjectileExplosionSound{};
 	class UAudioComponent* ProjectileAudioComponent{};
 
 	UPROPERTY(EditDefaultsOnly) // Projectile sound
-		USoundCue* ProjectileSound;
+	USoundCue* ProjectileSound;
 	bool bHasPlayedSound{};
 
 	/*

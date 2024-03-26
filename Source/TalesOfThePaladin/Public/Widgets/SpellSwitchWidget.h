@@ -19,16 +19,16 @@ public:
 
 	// Images of numbers
 	UPROPERTY(meta = (BindWidget))
-	UImage* MeteorIndex0{};
+	UImage* FireBallIndex0{};
 	UPROPERTY(meta = (BindWidget))
-	UImage* MeteorIndex1{};
+	UImage* FireBallIndex1{};
 	UPROPERTY(meta = (BindWidget))
-	UImage* MeteorIndex2{};
+	UImage* FireBallIndex2{};
 	UPROPERTY(meta = (BindWidget))
-	UImage* IceHammerIndex0{};
+	UImage* ThunderBallIndex0{};
 	UPROPERTY(meta = (BindWidget))
-	UImage* IceHammerIndex1{};
+	UImage* ThunderBallIndex1{};
 	UPROPERTY(meta = (BindWidget))
-	UImage* IceHammerIndex2{};
+	UImage* ThunderBallIndex2{};
 
 };

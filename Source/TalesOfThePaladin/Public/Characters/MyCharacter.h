@@ -127,8 +127,8 @@ private:
 	void SpellKeyPressed(FKey Key); // Capture pressed keys
 
 	void ProjectilePick(FKey Key,
-		const TArray<FKey> MeteorKeys, const TArray<FKey> IceHammerKeys,
-		const TArray<UImage*> MeteorPickImages, const TArray<UImage*> IceHammerPickImages);
+		const TArray<FKey> FireBallKeys, const TArray<FKey> ThunderBallKeys,
+		const TArray<UImage*> FireBallNumbers, const TArray<UImage*> ThunderBallNumbers);
 
 	void ResetSpellSwitchWidget(); // Reset the switch widget 
 

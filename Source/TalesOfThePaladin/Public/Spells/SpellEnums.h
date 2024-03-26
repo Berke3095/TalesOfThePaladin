@@ -4,8 +4,8 @@
 UENUM(BlueprintType)
 enum class EActiveSpell : uint8
 {
-	EAS_MeteorSpell UMETA(DisplayName = "MeteorSpellActive"),
-	EAS_IceHammerSpell UMETA(DisplayName = "IceHammerSpellActive"),
+	EAS_FireBallSpell UMETA(DisplayName = "FireBallSpellActive"),
+	EAS_ThunderBallSpell UMETA(DisplayName = "ThunderBallSpellActive"),
 	EAS_NONE UMETA(DisplayName = "NONE"),
 };
 
@@ -15,8 +15,8 @@ enum class EActiveSpell : uint8
 UENUM(BlueprintType)
 enum class EActiveSpellPick : uint8
 {
-	EASP_MeteorPick UMETA(DisplayName = "MeteorPickActive"),
-	EASP_IceHammerPick UMETA(DisplayName = "IceHammerPickActive"),
+	EASP_FireBallPick UMETA(DisplayName = "FireBallPickActive"),
+	EASP_ThunderBallPick UMETA(DisplayName = "ThunderBallPickActive"),
 	EASP_NONE UMETA(DisplayName = "NONE"),
 };
 

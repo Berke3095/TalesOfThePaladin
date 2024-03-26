@@ -181,31 +181,31 @@ void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respective
 
 	if (SpellSwitchWidget)
 	{
-		const TArray<FKey> MeteorKeys = { FKey("One"), FKey("One"), FKey("Two") };
-		const TArray<FKey> IceHammerKeys = { FKey("One"), FKey("Three"), FKey("One") };
+		const TArray<FKey> FireBallKeys = { FKey("One"), FKey("One"), FKey("Two") };
+		const TArray<FKey> ThunderBallKeys = { FKey("One"), FKey("Three"), FKey("One") };
 
-		const TArray<UImage*> MeteorPickImages = { // Meter number images
-			SpellSwitchWidget->MeteorIndex0,
-			SpellSwitchWidget->MeteorIndex1,
-			SpellSwitchWidget->MeteorIndex2 };
-		const TArray<UImage*> IceHammerPickImages = { // IceHammer number images
-			SpellSwitchWidget->IceHammerIndex0,
-			SpellSwitchWidget->IceHammerIndex1,
-			SpellSwitchWidget->IceHammerIndex2 };
+		const TArray<UImage*> FireBallNumbers = { // Meter number images
+			SpellSwitchWidget->FireBallIndex0,
+			SpellSwitchWidget->FireBallIndex1,
+			SpellSwitchWidget->FireBallIndex2 };
+		const TArray<UImage*> ThunderBallNumbers = { // IceHammer number images
+			SpellSwitchWidget->ThunderBallIndex0,
+			SpellSwitchWidget->ThunderBallIndex1,
+			SpellSwitchWidget->ThunderBallIndex2 };
 
 		if (ActiveSpellTypePick == EActiveSpellTypePick::EASTP_ProjectileTypePick)
 		{
-			ProjectilePick(Key, MeteorKeys, IceHammerKeys, MeteorPickImages, IceHammerPickImages);
+			ProjectilePick(Key, FireBallKeys, ThunderBallKeys, FireBallNumbers, ThunderBallNumbers);
 		}
 		else
 		{
-			if (Key == MeteorKeys[0] && Key == IceHammerKeys[0]) // Projectile pick activated
+			if (Key == FireBallKeys[0] && Key == ThunderBallKeys[0]) // Projectile pick activated
 			{
 				ActiveSpellTypePick = EActiveSpellTypePick::EASTP_ProjectileTypePick;
 				PressedKeys.Add(Key);
 				IndexNum++;
-				IceHammerPickImages[0]->SetOpacity(0.5f);
-				MeteorPickImages[0]->SetOpacity(0.5f);
+				ThunderBallNumbers[0]->SetOpacity(0.5f);
+				FireBallNumbers[0]->SetOpacity(0.5f);
 				UE_LOG(LogTemp, Warning, TEXT("Projectile pick initiated"));
 			}
 			else
@@ -217,21 +217,21 @@ void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respective
 }
 
 void AMyCharacter::ProjectilePick(FKey Key,
-	const TArray<FKey> MeteorKeys, const TArray<FKey> IceHammerKeys,
-	const TArray<UImage*> MeteorPickImages, const TArray<UImage*> IceHammerPickImages)
+	const TArray<FKey> FireBallKeys, const TArray<FKey> ThunderBallKeys,
+	const TArray<UImage*> FireBallNumbers, const TArray<UImage*> ThunderBallNumbers)
 {
-	if (Key == MeteorKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_IceHammerPick) // Start meteor spell pick process
+	if (Key == FireBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_ThunderBallPick) // Start meteor spell pick process 
 	{
-		ActiveSpellPick = EActiveSpellPick::EASP_MeteorPick; // Lock the pick process
+		ActiveSpellPick = EActiveSpellPick::EASP_FireBallPick; // Lock the pick process
 
 		PressedKeys.Add(Key); // Add the correct key to the array
 
-		MeteorPickImages[IndexNum]->SetOpacity(0.5f); // Lower the opacity of the image respectively
-		IceHammerPickImages[0]->SetOpacity(1.0f);
+		FireBallNumbers[IndexNum]->SetOpacity(0.5f); // Lower the opacity of the image respectively
+		ThunderBallNumbers[0]->SetOpacity(1.0f);
 
-		if (IndexNum == MeteorKeys.Num() - 1) // Once reached the max index, successful
+		if (IndexNum == FireBallKeys.Num() - 1) // Once reached the max index, successful
 		{
-			ActiveSpell = EActiveSpell::EAS_MeteorSpell;
+			ActiveSpell = EActiveSpell::EAS_FireBallSpell;
 			ChosenSkill = 0;
 			SpellSwitchDeactive();
 			UE_LOG(LogTemp, Warning, TEXT("Meteor spell picked"));
@@ -241,18 +241,18 @@ void AMyCharacter::ProjectilePick(FKey Key,
 			IndexNum++;
 		}
 	}
-	else if (Key == IceHammerKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_MeteorPick) // Start icehammer spell pick process
+	else if (Key == ThunderBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_FireBallPick) // Start icehammer spell pick process
 	{
-		ActiveSpellPick = EActiveSpellPick::EASP_IceHammerPick;
+		ActiveSpellPick = EActiveSpellPick::EASP_ThunderBallPick;
 
 		PressedKeys.Add(Key);
 
-		IceHammerPickImages[IndexNum]->SetOpacity(0.5f);
-		MeteorPickImages[0]->SetOpacity(1.0f);
+		ThunderBallNumbers[IndexNum]->SetOpacity(0.5f);
+		FireBallNumbers[0]->SetOpacity(1.0f);
 
-		if (IndexNum == IceHammerKeys.Num() - 1) // Once reached the max index, successful
+		if (IndexNum == ThunderBallKeys.Num() - 1) // Once reached the max index, successful
 		{
-			ActiveSpell = EActiveSpell::EAS_IceHammerSpell;
+			ActiveSpell = EActiveSpell::EAS_ThunderBallSpell;
 			ChosenSkill = 1;
 			SpellSwitchDeactive();
 			UE_LOG(LogTemp, Warning, TEXT("IceHammer spell picked"));
@@ -276,12 +276,12 @@ void AMyCharacter::ResetSpellSwitchWidget() // Reset widget if wrong buttons pre
 	ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 	if (SpellSwitchWidget)
 	{
-		SpellSwitchWidget->MeteorIndex0->SetOpacity(1.0f);
-		SpellSwitchWidget->MeteorIndex1->SetOpacity(1.0f);
-		SpellSwitchWidget->MeteorIndex2->SetOpacity(1.0f);
-		SpellSwitchWidget->IceHammerIndex0->SetOpacity(1.0f);
-		SpellSwitchWidget->IceHammerIndex1->SetOpacity(1.0f);
-		SpellSwitchWidget->IceHammerIndex2->SetOpacity(1.0f);
+		SpellSwitchWidget->FireBallIndex0->SetOpacity(1.0f);
+		SpellSwitchWidget->FireBallIndex1->SetOpacity(1.0f);
+		SpellSwitchWidget->FireBallIndex2->SetOpacity(1.0f);
+		SpellSwitchWidget->ThunderBallIndex0->SetOpacity(1.0f);
+		SpellSwitchWidget->ThunderBallIndex1->SetOpacity(1.0f);
+		SpellSwitchWidget->ThunderBallIndex2->SetOpacity(1.0f);
 	}
 }
 
