@@ -15,6 +15,7 @@
 #include "Engine/SkeletalMeshSocket.h" //Mesh socket
 #include "Spells/Projectile.h" // Spells
 #include "Kismet/KismetMathLibrary.h" // Math
+#include "Kismet/GameplayStatics.h" // Sound
 
 // Widget
 #include "Widgets/SpellSwitchWidget.h" 
@@ -46,9 +47,6 @@ AMyCharacter::AMyCharacter() // Defaults
 
 	// Projectile types
 	ProjectileClass.SetNum(2);
-
-	// Amount of keys we can store
-	PressedKeys.SetNum(3);
 
 	bUseControllerRotationYaw = false;
 
@@ -154,7 +152,7 @@ void AMyCharacter::SpellSwitchDeactive() // Release ctrl
 	{
 		SpellSwitchWidget->RemoveFromParent();
 		SpellSwitchWidget = nullptr;
-		ResetSpellSwitchWidget();
+		ResetSpellSwitchWidget();  
 	}
 }
 
@@ -176,6 +174,7 @@ void AMyCharacter::SpellSwitchActive(const FInputActionValue& InputValue) // Hol
 
 void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respectively
 {
+	int32 PreviousPressedKeysSize = PressedKeys.Num();
 	FString KeyName = Key.GetDisplayName().ToString();
 	UE_LOG(LogTemp, Warning, TEXT("Key pressed: %s"), *KeyName);
 
@@ -211,8 +210,15 @@ void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respective
 			else
 			{
 				ResetSpellSwitchWidget();
+				PlaySpellNumberPick(0);
 			}
 		}
+	}
+
+	if (PressedKeys.Num() > PreviousPressedKeysSize) 
+	{
+		// If the current size is greater than the previous size, play the sound
+		PlaySpellNumberPick(1); 
 	}
 }
 
@@ -265,6 +271,7 @@ void AMyCharacter::ProjectilePick(FKey Key,
 	else
 	{
 		ResetSpellSwitchWidget();
+		PlaySpellNumberPick(0);
 	}
 }
 
@@ -301,6 +308,14 @@ void AMyCharacter::SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocke
 				World->SpawnActor<AProjectile>(ProjectileClass[ChosenSkill], ProjectileSocketTransform);
 			}
 		}
+	}
+}
+
+void AMyCharacter::PlaySpellNumberPick(int32 SpellPickSoundNum)
+{
+	if (SpellPickNumberSounds[SpellPickSoundNum])
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), SpellPickNumberSounds[SpellPickSoundNum]);
 	}
 }
 

@@ -18,6 +18,9 @@ class UImage;
 // Getting skeletal mesh socket
 class USkeletalMeshSocket;
 
+// Sounds
+class USoundBase;
+
 UCLASS()
 class TALESOFTHEPALADIN_API AMyCharacter : public ACharacter
 {
@@ -74,6 +77,9 @@ protected:
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* SpellPickNumberSounds[2]; 
 
 	/*
 		OFFSET
@@ -134,6 +140,8 @@ private:
 
 	int32 IndexNum{}; // IndexNum to increment for each key pressed 
 	int32 ChosenSkill{}; // Choosen skill index num
+
+	void PlaySpellNumberPick(int32 SpellPickSoundNum); 
 
 	/*
 		OFFSET
