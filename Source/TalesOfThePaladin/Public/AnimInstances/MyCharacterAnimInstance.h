@@ -46,6 +46,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CharacterYaw{};
 
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	FTransform LeftHandTransform;
+
 	/*
 		COMBAT
 	*/
