@@ -88,10 +88,8 @@ private:
 	/*
 		COMPONENTS
 	*/
-
 	class UCapsuleComponent* CapsuleComponent{};
-	class USkeletalMeshComponent* MeshComponent{};
- 
+
 	/*
 		INPUT
 	*/
@@ -132,8 +130,8 @@ private:
 	void SpellKeyPressed(FKey Key); // Capture pressed keys
 
 	void ProjectilePick(FKey Key,
-		const TArray<FKey> FireBallKeys, const TArray<FKey> ThunderBallKeys,
-		const TArray<UImage*> FireBallNumbers, const TArray<UImage*> ThunderBallNumbers);
+	const TArray<FKey> FireBallKeys, const TArray<FKey> ThunderBallKeys,
+	const TArray<UImage*> FireBallNumbers, const TArray<UImage*> ThunderBallNumbers);
 
 	void ResetSpellSwitchWidget(); // Reset the switch widget 
 
@@ -172,4 +170,6 @@ public:
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
 	const bool GetAimState() const { return bIsAiming; }
+	AWeapon* const GetWeapon() const;
+	class USkeletalMeshComponent* MeshComponent{};
 };
