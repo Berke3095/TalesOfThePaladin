@@ -14,8 +14,12 @@
 
 #include "Engine/SkeletalMeshSocket.h" //Mesh socket
 #include "Spells/Projectile.h" // Spells
+
+// Kismet
 #include "Kismet/KismetMathLibrary.h" // Math
-#include "Kismet/GameplayStatics.h" // Sound
+#include "Kismet/GameplayStatics.h" 
+
+#include "Sound/SoundCue.h" // Sound
 
 // Widget
 #include "Widgets/SpellSwitchWidget.h" 

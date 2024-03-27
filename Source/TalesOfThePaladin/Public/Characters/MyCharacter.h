@@ -10,7 +10,7 @@ class UInputAction; // Used for input mapping
 class USpellSwitchWidget; // Used for widgets
 class UImage; // For images
 class USkeletalMeshSocket; // Getting skeletal mesh socket
-class USoundBase; // Sounds
+class USoundCue; // Sounds
 class AWeapon; // Class
 
 UCLASS()
@@ -71,7 +71,7 @@ protected:
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
-	USoundBase* SpellPickNumberSounds[2]; 
+	USoundCue* SpellPickNumberSounds[2]; 
 
 	/*
 		OFFSET
