@@ -45,9 +45,6 @@ AMyCharacter::AMyCharacter() // Defaults
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonShoulderCamera"));
 	Camera->SetupAttachment(SpringArm);
 
-	// Projectile types
-	ProjectileClass.SetNum(2);
-
 	bUseControllerRotationYaw = false;
 
 }
@@ -183,11 +180,11 @@ void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respective
 		const TArray<FKey> FireBallKeys = { FKey("One"), FKey("One"), FKey("Two") };
 		const TArray<FKey> ThunderBallKeys = { FKey("One"), FKey("Three"), FKey("One") };
 
-		const TArray<UImage*> FireBallNumbers = { // Meter number images
+		const TArray<UImage*> FireBallNumbers = { // FireBall number images
 			SpellSwitchWidget->FireBallIndex0,
 			SpellSwitchWidget->FireBallIndex1,
 			SpellSwitchWidget->FireBallIndex2 };
-		const TArray<UImage*> ThunderBallNumbers = { // IceHammer number images
+		const TArray<UImage*> ThunderBallNumbers = { // ThunderBall number images
 			SpellSwitchWidget->ThunderBallIndex0,
 			SpellSwitchWidget->ThunderBallIndex1,
 			SpellSwitchWidget->ThunderBallIndex2 };
@@ -226,7 +223,7 @@ void AMyCharacter::ProjectilePick(FKey Key,
 	const TArray<FKey> FireBallKeys, const TArray<FKey> ThunderBallKeys,
 	const TArray<UImage*> FireBallNumbers, const TArray<UImage*> ThunderBallNumbers)
 {
-	if (Key == FireBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_ThunderBallPick) // Start meteor spell pick process 
+	if (Key == FireBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_ThunderBallPick) // Start FireBall spell pick process 
 	{
 		ActiveSpellPick = EActiveSpellPick::EASP_FireBallPick; // Lock the pick process
 
@@ -240,14 +237,14 @@ void AMyCharacter::ProjectilePick(FKey Key,
 			ActiveSpell = EActiveSpell::EAS_FireBallSpell;
 			ChosenSkill = 0;
 			SpellSwitchDeactive();
-			UE_LOG(LogTemp, Warning, TEXT("Meteor spell picked"));
+			UE_LOG(LogTemp, Warning, TEXT("FireBall spell picked"));
 		}
 		else
 		{
 			IndexNum++;
 		}
 	}
-	else if (Key == ThunderBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_FireBallPick) // Start icehammer spell pick process
+	else if (Key == ThunderBallKeys[IndexNum] && ActiveSpellPick != EActiveSpellPick::EASP_FireBallPick) // Start ThunderBall spell pick process
 	{
 		ActiveSpellPick = EActiveSpellPick::EASP_ThunderBallPick;
 
@@ -261,7 +258,7 @@ void AMyCharacter::ProjectilePick(FKey Key,
 			ActiveSpell = EActiveSpell::EAS_ThunderBallSpell;
 			ChosenSkill = 1;
 			SpellSwitchDeactive();
-			UE_LOG(LogTemp, Warning, TEXT("IceHammer spell picked"));
+			UE_LOG(LogTemp, Warning, TEXT("ThunderBall spell picked"));
 		}
 		else
 		{

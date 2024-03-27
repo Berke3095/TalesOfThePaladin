@@ -63,7 +63,7 @@ protected:
 		COMBAT
 	*/
 	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<class AProjectile>> ProjectileClass{};
+	TSubclassOf<class AProjectile> ProjectileClass[2];
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
