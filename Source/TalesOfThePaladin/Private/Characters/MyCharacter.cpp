@@ -21,8 +21,14 @@
 #include "Widgets/SpellSwitchWidget.h" 
 #include "Components/Image.h"
 
-//Attributes
+// Weapon
+#include "Weapons/Weapon.h"
+
+// Attributes
 #include "GameFramework/CharacterMovementComponent.h"
+
+// Components
+#include "Components/CapsuleComponent.h"
 
 AMyCharacter::AMyCharacter() // Defaults
 {
@@ -32,10 +38,18 @@ AMyCharacter::AMyCharacter() // Defaults
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = 200.f;
 
+	// Check for these in editor, sometimes doesn't apply
+	CapsuleComponent = GetCapsuleComponent();
+	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore); 
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);  
+
 	// Collision settings - Make sure custom object type is "MainCharacter"
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	MeshComponent = GetMesh();
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore); // custom "Projectile" object type 
+	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore); 
 
 	// Camera settings
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -62,11 +76,22 @@ void AMyCharacter::BeginPlay()
 		}
 	}
 
+	const USkeletalMeshSocket* WeaponSocket = GetMesh()->GetSocketByName(FName("WeaponSocket")); //Getting socket by name   
+	FTransform WeaponSocketTransform = WeaponSocket->GetSocketTransform(GetMesh());
+	if (WeaponClass)
+	{
+		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, WeaponSocketTransform);
+		if (Weapon)
+		{
+			Weapon->Equip(GetMesh(), FName("WeaponSocket"));
+		}
+	}
+
 	// Get reference for mycharacter animinstance 
 	MyCharacterAnimInstance = Cast<UMyCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 
-	RightProjectileSocket = GetMesh()->GetSocketByName(FName("RightProjectileSocket")); //Getting socket by name   
-	LeftProjectileSocket = GetMesh()->GetSocketByName(FName("LeftProjectileSocket")); //Getting socket by name   
+	RightProjectileSocket = GetMesh()->GetSocketByName(FName("RightProjectileSocket"));   
+	LeftProjectileSocket = GetMesh()->GetSocketByName(FName("LeftProjectileSocket")); 
 }
 
 void AMyCharacter::Tick(float DeltaTime)
@@ -117,6 +142,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 	if (Aim)
 	{
 		bIsAiming = true; 
+		Weapon->WeaponMesh->SetVisibility(false);
 		GetCharacterMovement()->MaxWalkSpeed = 200.f; 
 		
 	}
@@ -125,6 +151,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 void AMyCharacter::DropAim()
 {
 	bIsAiming = false;
+	Weapon->WeaponMesh->SetVisibility(true);
 	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
 

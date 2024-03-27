@@ -6,20 +6,12 @@
 #include "Spells/SpellEnums.h"
 #include "MyCharacter.generated.h"
 
-// Used for input mapping
-class UInputAction;
-
-// Used for widgets
-class USpellSwitchWidget;
-
-// For images
-class UImage;
-
-// Getting skeletal mesh socket
-class USkeletalMeshSocket;
-
-// Sounds
-class USoundBase;
+class UInputAction; // Used for input mapping
+class USpellSwitchWidget; // Used for widgets
+class UImage; // For images
+class USkeletalMeshSocket; // Getting skeletal mesh socket
+class USoundBase; // Sounds
+class AWeapon; // Class
 
 UCLASS()
 class TALESOFTHEPALADIN_API AMyCharacter : public ACharacter
@@ -94,6 +86,13 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; // Bind functionality to input
 
 	/*
+		COMPONENTS
+	*/
+
+	class UCapsuleComponent* CapsuleComponent{};
+	class USkeletalMeshComponent* MeshComponent{};
+ 
+	/*
 		INPUT
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -162,6 +161,9 @@ private:
 	/*
 		COMBAT
 	*/
+	AWeapon* Weapon{};
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeapon> WeaponClass{};
 
 	bool bIsAiming{}; 
 

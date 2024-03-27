@@ -24,9 +24,8 @@ AProjectile::AProjectile()
 
 	// Collision Settings - Make sure custom object type is "Projectile"
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
+	BoxComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit); // Hit dynamic 
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->InitialSpeed = 1000.0f;
@@ -47,8 +46,6 @@ void AProjectile::BeginPlay()
 			ProjectileMovementComponent->Velocity = CombatComponent->ProjectileDirection * ProjectileMovementComponent->MaxSpeed;
 		}
 	}
-
-	BoxComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit); // Hit dynamic
 
 	if (ProjectileSound)
 	{

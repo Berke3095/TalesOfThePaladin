@@ -13,6 +13,12 @@ class TALESOFTHEPALADIN_API UMyCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+private:
+
+	// Animation initialization and update events
+	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaTime) override;
+
 protected:
 
 	// Creating character reference
@@ -45,10 +51,4 @@ protected:
 	*/
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsAiming{};
-
-private:
-
-	// Animation initialization and update events
-	virtual void NativeInitializeAnimation() override;
-	virtual void NativeUpdateAnimation(float DeltaTime) override;
 };
