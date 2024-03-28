@@ -39,8 +39,7 @@ AMyCharacter::AMyCharacter() // Defaults
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Movement attributes
-	GetCharacterMovement()->MaxWalkSpeed = 400.f;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = 200.f;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
@@ -129,6 +128,32 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 	}
 }
 
+void AMyCharacter::Sprint(const FInputActionValue& InputValue)
+{
+	const bool Sprint = InputValue.Get<bool>();
+	if (Sprint)
+	{
+		// Get Dot to calculate forwardish movement
+		FVector ForwardVector = GetActorForwardVector();
+		FVector VelocityDirection = GetVelocity().GetSafeNormal();
+		float DotProductForward = FVector::DotProduct(ForwardVector, VelocityDirection);
+
+		if (DotProductForward > 0.9f) // If moving forward
+		{
+			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		}
+		else
+		{
+			DropSprint();
+		}
+	}
+}
+
+void AMyCharacter::DropSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+}
+
 void AMyCharacter::Look(const FInputActionValue& InputValue)
 {
 	const FVector2D Value = InputValue.Get<FVector2D>();
@@ -147,7 +172,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 	{
 		bIsAiming = true; 
 		Weapon->WeaponMesh->SetVisibility(false);
-		GetCharacterMovement()->MaxWalkSpeed = 200.f; 
+		GetCharacterMovement()->MaxWalkSpeed = AimSpeed; 
 		
 	}
 }
@@ -156,7 +181,7 @@ void AMyCharacter::DropAim()
 {
 	bIsAiming = false;
 	Weapon->WeaponMesh->SetVisibility(true);
-	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
 
 void AMyCharacter::Attack(const FInputActionValue& InputValue)
@@ -426,11 +451,13 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyCharacter::Sprint); 
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyCharacter::DropSprint); 
 	}
 }
 

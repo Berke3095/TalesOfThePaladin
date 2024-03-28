@@ -32,6 +32,8 @@ protected:
 		INPUT FUNCTIONS
 	*/
 	void Move(const FInputActionValue& InputValue);
+	void Sprint(const FInputActionValue& InputValue);
+	void DropSprint();
 	void Look(const FInputActionValue& InputValue);
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
@@ -100,6 +102,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* MoveAction{};
 
+	// Sprint
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* SprintAction{};
+
 	// Look
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* LookAction{};
@@ -155,6 +161,10 @@ private:
 		MOVEMENT
 	*/
 	void UseControllerYaw(float DeltaTime);
+
+	const float DefaultSpeed{400.0f};
+	const float AimSpeed{200.0f};
+	const float SprintSpeed{600.0f};
 
 	/*
 		COMBAT
