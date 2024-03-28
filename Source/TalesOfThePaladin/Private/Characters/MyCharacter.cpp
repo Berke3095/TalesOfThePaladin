@@ -131,7 +131,7 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint)
+	if (Sprint && !bIsAiming)
 	{
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
@@ -151,6 +151,7 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropSprint()
 {
+	if (bIsAiming == true) { return; }
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
 
