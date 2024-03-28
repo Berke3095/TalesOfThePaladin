@@ -89,6 +89,7 @@ private:
 		COMPONENTS
 	*/
 	class UCapsuleComponent* CapsuleComponent{};
+	class USkeletalMeshComponent* MeshComponent{}; 
 
 	/*
 		INPUT
@@ -170,6 +171,4 @@ public:
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
 	const bool GetAimState() const { return bIsAiming; }
-	AWeapon* const GetWeapon() const;
-	class USkeletalMeshComponent* MeshComponent{};
 };

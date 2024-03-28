@@ -4,9 +4,6 @@
 #include "Characters/MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-// Weapon
-#include "Weapons/Weapon.h"
-
 #include "Kismet/KismetMathLibrary.h" // Math
 #include "KismetAnimationLibrary.h" // Animation
 
@@ -43,16 +40,5 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		CharacterYaw = MyCharacter->GetCharacterYaw();
 		CharacterPitch = MyCharacter->GetCharacterPitch();
 		bIsAiming = MyCharacter->GetAimState();
-
-		Weapon = MyCharacter->GetWeapon();
-		if (Weapon && Weapon->WeaponMesh && MyCharacter->MeshComponent)
-		{
-			OffHandTransform = Weapon->WeaponMesh->GetSocketTransform(FName("OffHandSocket", ERelativeTransformSpace::RTS_World));
-			FVector OutPosition{};
-			FRotator OutRotation{};
-			MyCharacter->MeshComponent->TransformToBoneSpace(FName("Hand_R"), OffHandTransform.GetLocation(), FRotator::ZeroRotator, OutPosition, OutRotation); 
-			OffHandTransform.SetLocation(OutPosition);
-			OffHandTransform.SetRotation(FQuat(OutRotation));
-		}
 	}
 }
