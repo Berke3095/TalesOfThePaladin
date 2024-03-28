@@ -88,8 +88,7 @@ private:
 	/*
 		COMPONENTS
 	*/
-	class UCapsuleComponent* CapsuleComponent{};
-	class USkeletalMeshComponent* MeshComponent{}; 
+	class UCapsuleComponent* CapsuleComponent{}; 
 
 	/*
 		INPUT
@@ -171,4 +170,8 @@ public:
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
 	const bool GetAimState() const { return bIsAiming; }
+
+	// For fabric
+	const AWeapon* GetWeapon(); 
+	class USkeletalMeshComponent* MeshComponent{};
 };

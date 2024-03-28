@@ -46,9 +46,14 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float CharacterYaw{};
 
+	UPROPERTY(BlueprintReadOnly)
+	FTransform OffHandTransform{};
+
 	/*
 		COMBAT
 	*/
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsAiming{};
+
+	const class AWeapon* Weapon{};
 };

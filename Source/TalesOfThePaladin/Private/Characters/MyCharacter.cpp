@@ -400,6 +400,18 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	SetActorRotation(InterpolatedRotation);
 }
 
+const AWeapon* AMyCharacter::GetWeapon()
+{
+	if (Weapon)
+	{
+		return Weapon;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 // Bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
