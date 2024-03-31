@@ -43,8 +43,10 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		CharacterYaw = MyCharacter->GetCharacterYaw();
 		CharacterPitch = MyCharacter->GetCharacterPitch();
 		bIsAiming = MyCharacter->GetAimState();
+		bIsAttacking = MyCharacter->GetAttackState();
+		ActiveAttackCharge = MyCharacter->GetActiveAttackCharge();
 		Weapon = MyCharacter->GetWeapon();
-		if (Weapon)
+		if (Weapon && !bIsAttacking)
 		{
 			OffHandTransform = Weapon->WeaponMesh->GetSocketTransform(FName("OffHandSocket"), ERelativeTransformSpace::RTS_World);
 			FVector OutPosition{};
