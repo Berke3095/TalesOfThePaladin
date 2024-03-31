@@ -44,8 +44,8 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		CharacterPitch = MyCharacter->GetCharacterPitch();
 		bIsAiming = MyCharacter->GetAimState();
 		bIsAttacking = MyCharacter->GetAttackState();
-		ActiveAttackCharge = MyCharacter->GetActiveAttackCharge();
-		ActiveChargeAttack = MyCharacter->GetActiveChargeAttack();
+		ActiveChargeAnim = MyCharacter->GetActiveChargeAnim();
+		ActiveHeavyAttack = MyCharacter->GetActiveHeavyAttack();
 		Weapon = MyCharacter->GetWeapon();
 		if (Weapon && !bIsAttacking)
 		{

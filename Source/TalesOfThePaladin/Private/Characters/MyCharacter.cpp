@@ -104,6 +104,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("bReadyToChargeAttack: %s"), bReadyToHeavyAttack ? TEXT("True") : TEXT("False")); 
 }
 
 /*
@@ -172,7 +174,7 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
 	const bool Aim = InputValue.Get<bool>();
-	if (Aim)
+	if (Aim && !bIsCharging)
 	{
 		bIsAiming = true; 
 		Weapon->WeaponMesh->SetVisibility(false);
@@ -205,39 +207,12 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 void AMyCharacter::Charge(const FInputActionValue& InputValue)
 {
 	const bool Charge = InputValue.Get<bool>();
-	if (Charge)
+	if (Charge && bIsAiming && !bIsCharging && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 	{
 		bIsCharging = true;
-		if (MyCharacterAnimInstance && ChargeAttackMontage)
+		if (MyCharacterAnimInstance && ChargeAnimMontage)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-		}
-
-		int32 ChargeAnimSelection{};
-		FName SectionName = FName();
-		if (bIsCharging && !MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage))
-		{
-			MyCharacterAnimInstance->Montage_Play(ChargeAttackMontage);
-
-			if (ActiveAttackCharge == EActiveAttackCharge::EAC_NONE) { ChargeAnimSelection = 0; }
-			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack1) { ChargeAnimSelection = 1; }
-			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack2) { ChargeAnimSelection = 2; }
-
-			switch (ChargeAnimSelection)
-			{
-			case 0:
-				UE_LOG(LogTemp, Warning, TEXT("Charging First Attack"));
-				SectionName = FName("0"); 
-				if (!GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
-				{
-					GetWorld()->GetTimerManager().SetTimer(ChargeAttackTimer, this, &AMyCharacter::SetChargeAttackBoolToTrue, SecondsToHold);
-					if (bReadyToChargeAttack)
-					{
-					ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack1;
-					UE_LOG(LogTemp, Warning, TEXT("Ready to Attack 1"));
-					}
-				}
-			}
 		}
 	}
 }
@@ -245,145 +220,11 @@ void AMyCharacter::Charge(const FInputActionValue& InputValue)
 void AMyCharacter::DropCharge()
 {
 	bIsCharging = false; 
+	bReadyToHeavyAttack = false;
+	GetWorldTimerManager().ClearTimer(ChargeTimer); 
+	MyCharacterAnimInstance->Montage_Stop(0.2f, ChargeAnimMontage); // Cut the montage
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
-
-//void AMyCharacter::Charge(const FInputActionValue& InputValue)
-//{
-//	const bool Charge = InputValue.Get<bool>();
-//	if (Charge)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("Charging"));
-//		if (MyCharacterAnimInstance && ChargeAttackMontage)
-//		{
-//			if (MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage))
-//			{
-//				GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-//			}
-//			int32 ChargeAnimSelection{};
-//			FName SectionName = FName();
-//			if (!MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage))
-//			{
-//				MyCharacterAnimInstance->Montage_Play(ChargeAttackMontage);
-//
-//				if (ActiveAttackCharge == EActiveAttackCharge::EAC_NONE) { ChargeAnimSelection = 0; ActiveAttackCharge = EActiveAttackCharge::EAC_ChargingAttack1; } // 1st attack charge
-//				if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack1) { ChargeAnimSelection = 1; ActiveAttackCharge = EActiveAttackCharge::EAC_ChargingAttack2; } // 2nd attack charge
-//				if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack2) { ChargeAnimSelection = 2; ActiveAttackCharge = EActiveAttackCharge::EAC_ChargingAttack3; } // 3rd attack charge
-//
-//				switch (ChargeAnimSelection)
-//				{
-//				case 0:
-//					UE_LOG(LogTemp, Warning, TEXT("Charging First Attack"));
-//					SectionName = FName("0");
-//					if (!GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
-//					{
-//						GetWorld()->GetTimerManager().SetTimer(ChargeAttackTimer, this, &AMyCharacter::SetChargeAttackBoolToTrue, SecondsToHold);
-//						if (bReadyToChargeAttack)
-//						{
-//							ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack1;
-//							GetWorldTimerManager().ClearTimer(ChargeAttackTimer);
-//						}
-//					}
-//					break;
-//				case 1:
-//					UE_LOG(LogTemp, Warning, TEXT("Charging Second Attack"));
-//					SectionName = FName("1");
-//					if (!GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
-//					{
-//						GetWorld()->GetTimerManager().SetTimer(ChargeAttackTimer, this, &AMyCharacter::SetChargeAttackBoolToTrue, SecondsToHold);
-//						if (bReadyToChargeAttack)
-//						{
-//							ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack2;
-//							GetWorldTimerManager().ClearTimer(ChargeAttackTimer);
-//						}
-//					}
-//					break;
-//				case 2:
-//					UE_LOG(LogTemp, Warning, TEXT("Charging Third Attack"));
-//					SectionName = FName("2");
-//					if (!GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
-//					{
-//						GetWorld()->GetTimerManager().SetTimer(ChargeAttackTimer, this, &AMyCharacter::SetChargeAttackBoolToTrue, SecondsToHold);
-//						if (bReadyToChargeAttack)
-//						{
-//							ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack3;
-//							GetWorldTimerManager().ClearTimer(ChargeAttackTimer);
-//						}
-//					}
-//					break;
-//
-//				default:
-//					break;
-//				}
-//				MyCharacterAnimInstance->Montage_JumpToSection(SectionName, ChargeAttackMontage);
-//			}
-//		}
-//		else 
-//		{
-//			if (bIsSprinting)
-//			{
-//				GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-//			}
-//			else
-//			{
-//				GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-//			}
-//			
-//		}
-//	}
-//}
-//
-//void AMyCharacter::DropCharge()
-//{
-//	if (MyCharacterAnimInstance && ChargeAttackMontage)
-//	{
-//		if (!MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage))
-//		{
-//			if (bIsSprinting)
-//			{
-//				GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-//			}
-//			else { GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed; }
-//		}
-//
-//		int32 ChargeAttackAnimSelection{};
-//		FName SectionName = FName();
-//		if (MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage) && bReadyToChargeAttack) // If charge anim is playing
-//		{
-//			MyCharacterAnimInstance->Montage_Play(ChargeAttackMontage); // Play the attack anim
-//
-//			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack1) { ChargeAttackAnimSelection = 0; ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack1; }
-//			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack2) { ChargeAttackAnimSelection = 1; ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack2; }
-//			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack3) { ChargeAttackAnimSelection = 2; ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack3; }
-//
-//			switch (ChargeAttackAnimSelection)
-//			{
-//			case 0:
-//				UE_LOG(LogTemp, Warning, TEXT("Throwing First Attack"));
-//				SectionName = FName("0.1");
-//				bReadyToChargeAttack = false;
-//				ActiveChargeAttack = EActiveChargeAttack::ECA_NONE; 
-//				break;
-//			case 1:
-//				UE_LOG(LogTemp, Warning, TEXT("Throwing Second Attack"));
-//				SectionName = FName("1.1");
-//				bReadyToChargeAttack = false;
-//				ActiveChargeAttack = EActiveChargeAttack::ECA_NONE;
-//				break;
-//			case 2:
-//				UE_LOG(LogTemp, Warning, TEXT("Throwing Third Attack"));
-//				SectionName = FName("2.1");
-//				bReadyToChargeAttack = false;
-//				ActiveChargeAttack = EActiveChargeAttack::ECA_NONE;
-//				break;
-//
-//			default:
-//				break;
-//			}
-//			MyCharacterAnimInstance->Montage_JumpToSection(SectionName, ChargeAttackMontage); 
-//		}
-//	}
-//}
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
 {
@@ -611,9 +452,9 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	SetActorRotation(InterpolatedRotation);
 }
 
-void AMyCharacter::SetChargeAttackBoolToTrue()
+void AMyCharacter::SetHeavyAttackBoolToTrue()
 {
-	bReadyToChargeAttack = true;
+	bReadyToHeavyAttack = true;
 }
 
 const AWeapon* AMyCharacter::GetWeapon()
@@ -645,7 +486,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
-		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Started, this, &AMyCharacter::Charge); 
+		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Started, this, &AMyCharacter::Charge);   
 		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Completed, this, &AMyCharacter::DropCharge);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);

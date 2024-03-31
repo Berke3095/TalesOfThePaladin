@@ -2,18 +2,18 @@
 
 // Active attack charge enum
 UENUM(BlueprintType)
-enum class EActiveAttackCharge : uint8
+enum class EActiveChargeAnim : uint8
 {
-	EAC_ChargingAttack1 UMETA(DisplayName = "ChargingAttack1"),
-	EAC_ChargingAttack2 UMETA(DisplayName = "ChargingAttack2"),
-	EAC_NONE UMETA(DisplayName = "NONE"),
+	ECA_NONE UMETA(DisplayName = "NONE"),
+	ECA_ChargingHeavyAttack1 UMETA(DisplayName = "ChargingHeavyAttack1"),
+	ECA_ChargingHeavyAttack2 UMETA(DisplayName = "ChargingHeavyAttack2"),
 };
 
 UENUM(BlueprintType)
-enum class EActiveChargeAttack : uint8
+enum class EActiveHeavyAttack : uint8
 {
-	ECA_ChargeAttack1 UMETA(DisplayName = "ChargeAttack1"),
-	ECA_ChargeAttack2 UMETA(DisplayName = "ChargeAttack2"),
-	ECA_ChargeAttack3 UMETA(DisplayName = "ChargeAttack3"),
-	ECA_NONE UMETA(DisplayName = "NONE"),
+	EHA_HeavyAttack1 UMETA(DisplayName = "HeavyAttack1"),
+	EHA_HeavyAttack2 UMETA(DisplayName = "HeavyAttack2"),
+	EHA_HeavyAttack3 UMETA(DisplayName = "HeavyAttack3"),
+	EHA_NONE UMETA(DisplayName = "NONE"),
 };

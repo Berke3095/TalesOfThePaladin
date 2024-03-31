@@ -60,10 +60,10 @@ protected:
 	bool bIsAttacking{};
 
 	UPROPERTY(BlueprintReadOnly)
-	EActiveAttackCharge ActiveAttackCharge{};
+	EActiveChargeAnim ActiveChargeAnim{};
 
 	UPROPERTY(BlueprintReadOnly)
-	EActiveChargeAttack ActiveChargeAttack{};
+	EActiveHeavyAttack ActiveHeavyAttack{};
 
 	const class AWeapon* Weapon{};
 };

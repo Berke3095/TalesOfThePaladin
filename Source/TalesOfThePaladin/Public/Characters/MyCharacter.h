@@ -49,7 +49,10 @@ protected:
 	UAnimMontage* SpellCastMontage{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* ChargeAttackMontage{};
+	UAnimMontage* ChargeAnimMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HeavyAttackMontage{}; 
 
 	/*
 		CAMERA
@@ -79,8 +82,8 @@ protected:
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
-	EActiveAttackCharge ActiveAttackCharge = EActiveAttackCharge::EAC_NONE;
-	EActiveChargeAttack ActiveChargeAttack = EActiveChargeAttack::ECA_NONE;
+	EActiveChargeAnim ActiveChargeAnim = EActiveChargeAnim::ECA_NONE;
+	EActiveHeavyAttack ActiveHeavyAttack = EActiveHeavyAttack::EHA_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* SpellPickNumberSounds[2]; 
@@ -192,10 +195,10 @@ private:
 	bool bIsAiming{}; 
 	bool bIsAttacking{};
 
-	FTimerHandle ChargeAttackTimer{}; // Hold charge timer
+	FTimerHandle ChargeTimer{}; // Hold charge timer
 	const float SecondsToHold{ 2.0f };
-	bool bReadyToChargeAttack{};
-	void SetChargeAttackBoolToTrue();
+	bool bReadyToHeavyAttack{};
+	void SetHeavyAttackBoolToTrue();
 	bool bIsCharging{};
 
 public:
@@ -206,8 +209,8 @@ public:
 	// Combat
 	const bool GetAimState() const { return bIsAiming; }
 	const bool GetAttackState() const { return bIsAttacking; }
-	const EActiveAttackCharge GetActiveAttackCharge() const { return ActiveAttackCharge; }
-	const EActiveChargeAttack GetActiveChargeAttack() const { return ActiveChargeAttack; }
+	const EActiveChargeAnim GetActiveChargeAnim() const { return ActiveChargeAnim; }
+	const EActiveHeavyAttack GetActiveHeavyAttack() const { return ActiveHeavyAttack; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 
