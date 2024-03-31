@@ -12,6 +12,7 @@ class UImage; // For images
 class USkeletalMeshSocket; // Getting skeletal mesh socket
 class USoundCue; // Sounds
 class AWeapon; // Class
+class UAnimMontage; // Anim montages
 
 UCLASS()
 class TALESOFTHEPALADIN_API AMyCharacter : public ACharacter
@@ -43,8 +44,11 @@ protected:
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
-	UPROPERTY(EditDefaultsOnly)
-	class UAnimMontage* SpellCastMontage{};
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* SpellCastMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* ChargeAttackMontage{};
 
 	/*
 		CAMERA
