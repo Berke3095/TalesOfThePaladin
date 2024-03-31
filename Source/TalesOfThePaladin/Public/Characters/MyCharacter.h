@@ -80,6 +80,7 @@ protected:
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	EActiveAttackCharge ActiveAttackCharge = EActiveAttackCharge::EAC_NONE;
+	EActiveChargeAttack ActiveChargeAttack = EActiveChargeAttack::ECA_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* SpellPickNumberSounds[2]; 
@@ -179,6 +180,8 @@ private:
 	const float AimSpeed{200.0f};
 	const float SprintSpeed{600.0f};
 
+	bool bIsSprinting{};
+
 	/*
 		COMBAT
 	*/
@@ -189,6 +192,12 @@ private:
 	bool bIsAiming{}; 
 	bool bIsAttacking{};
 
+	FTimerHandle ChargeAttackTimer{}; // Hold charge timer
+	const float SecondsToHold{ 2.0f };
+	bool bReadyToChargeAttack{};
+	void SetChargeAttackBoolToTrue();
+	bool bIsCharging{};
+
 public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
@@ -198,6 +207,7 @@ public:
 	const bool GetAimState() const { return bIsAiming; }
 	const bool GetAttackState() const { return bIsAttacking; }
 	const EActiveAttackCharge GetActiveAttackCharge() const { return ActiveAttackCharge; }
+	const EActiveChargeAttack GetActiveChargeAttack() const { return ActiveChargeAttack; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 

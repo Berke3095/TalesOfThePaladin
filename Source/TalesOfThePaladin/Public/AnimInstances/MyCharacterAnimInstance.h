@@ -62,5 +62,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	EActiveAttackCharge ActiveAttackCharge{};
 
+	UPROPERTY(BlueprintReadOnly)
+	EActiveChargeAttack ActiveChargeAttack{};
+
 	const class AWeapon* Weapon{};
 };
