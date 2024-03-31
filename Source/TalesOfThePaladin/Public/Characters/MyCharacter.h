@@ -4,7 +4,6 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h" // Input action
 #include "Spells/SpellEnums.h"
-#include "Combat/AttackEnums.h"
 #include "MyCharacter.generated.h"
 
 class UInputAction; // Used for input mapping
@@ -40,19 +39,11 @@ protected:
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
-	void Charge(const FInputActionValue& InputValue);
-	void DropCharge();
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* SpellCastMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* ChargeAnimMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* HeavyAttackMontage{}; 
 
 	/*
 		CAMERA
@@ -81,9 +72,6 @@ protected:
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
-
-	EActiveChargeAnim ActiveChargeAnim = EActiveChargeAnim::ECA_NONE;
-	EActiveHeavyAttack ActiveHeavyAttack = EActiveHeavyAttack::EHA_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* SpellPickNumberSounds[2]; 
@@ -134,10 +122,6 @@ private:
 	// Spell switch
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* SpellSwitchAction{};
-
-	// Charge
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputAction* ChargeAction{};
 
 	/*
 		WIDGETS
@@ -193,11 +177,6 @@ private:
 	TSubclassOf<AWeapon> WeaponClass{};
 
 	bool bIsAiming{}; 
-	bool bIsAttacking{};
-
-	bool bReadyToHeavyAttack{};
-	bool bIsCharging{};
-	int32 ComboInc{};
 
 public:
 	// to be shared with MyCharacter anim instance
@@ -206,7 +185,6 @@ public:
 
 	// Combat
 	const bool GetAimState() const { return bIsAiming; }
-	const bool GetAttackState() const { return bIsAttacking; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 
