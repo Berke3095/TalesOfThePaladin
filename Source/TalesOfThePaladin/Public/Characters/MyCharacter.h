@@ -209,8 +209,6 @@ public:
 	// Combat
 	const bool GetAimState() const { return bIsAiming; }
 	const bool GetAttackState() const { return bIsAttacking; }
-	const EActiveChargeAnim GetActiveChargeAnim() const { return ActiveChargeAnim; }
-	const EActiveHeavyAttack GetActiveHeavyAttack() const { return ActiveHeavyAttack; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 

@@ -104,8 +104,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("bReadyToChargeAttack: %s"), bReadyToHeavyAttack ? TEXT("True") : TEXT("False")); 
 }
 
 /*
@@ -257,8 +255,8 @@ void AMyCharacter::SpellSwitchActive(const FInputActionValue& InputValue) // Hol
 void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respectively
 {
 	int32 PreviousPressedKeysSize = PressedKeys.Num();
-	FString KeyName = Key.GetDisplayName().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("Key pressed: %s"), *KeyName);
+	/*FString KeyName = Key.GetDisplayName().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("Key pressed: %s"), *KeyName);*/
 
 	if (SpellSwitchWidget)
 	{

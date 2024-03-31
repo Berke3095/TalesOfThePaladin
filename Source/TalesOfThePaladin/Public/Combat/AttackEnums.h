@@ -4,9 +4,10 @@
 UENUM(BlueprintType)
 enum class EActiveChargeAnim : uint8
 {
-	ECA_NONE UMETA(DisplayName = "NONE"),
 	ECA_ChargingHeavyAttack1 UMETA(DisplayName = "ChargingHeavyAttack1"),
 	ECA_ChargingHeavyAttack2 UMETA(DisplayName = "ChargingHeavyAttack2"),
+	ECA_ChargingHeavyAttack3 UMETA(DisplayName = "ChargingHeavyAttack3"),
+	ECA_NONE UMETA(DisplayName = "NONE"),
 };
 
 UENUM(BlueprintType)

@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "Combat/AttackEnums.h"
 #include "MyCharacterAnimInstance.generated.h"
 
 // Character related classes
@@ -58,12 +57,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsAttacking{};
-
-	UPROPERTY(BlueprintReadOnly)
-	EActiveChargeAnim ActiveChargeAnim{};
-
-	UPROPERTY(BlueprintReadOnly)
-	EActiveHeavyAttack ActiveHeavyAttack{};
 
 	const class AWeapon* Weapon{};
 };
