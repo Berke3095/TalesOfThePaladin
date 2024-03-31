@@ -11,7 +11,6 @@
 // Animation
 #include "AnimInstances/MyCharacterAnimInstance.h" 
 #include "Animation/AnimMontage.h"
-#include "Engine/TimerHandle.h" 
 
 #include "Engine/SkeletalMeshSocket.h" //Mesh socket
 #include "Spells/Projectile.h" // Spells
@@ -221,7 +220,6 @@ void AMyCharacter::DropCharge()
 	if (bIsAiming) { return; }
 	bIsCharging = false; 
 	bReadyToHeavyAttack = false;
-	GetWorldTimerManager().ClearTimer(ChargeTimer); 
 	MyCharacterAnimInstance->Montage_Stop(0.2f, ChargeAnimMontage); // Cut the montage
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
@@ -450,11 +448,6 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	FRotator TargetActorRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), TargetActorRotation, DeltaTime, 10.0f);
 	SetActorRotation(InterpolatedRotation);
-}
-
-void AMyCharacter::SetHeavyAttackBoolToTrue()
-{
-	bReadyToHeavyAttack = true;
 }
 
 const AWeapon* AMyCharacter::GetWeapon()

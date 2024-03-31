@@ -195,11 +195,9 @@ private:
 	bool bIsAiming{}; 
 	bool bIsAttacking{};
 
-	FTimerHandle ChargeTimer{}; // Hold charge timer
-	const float SecondsToHold{ 2.0f };
 	bool bReadyToHeavyAttack{};
-	void SetHeavyAttackBoolToTrue();
 	bool bIsCharging{};
+	int32 ComboInc{};
 
 public:
 	// to be shared with MyCharacter anim instance
