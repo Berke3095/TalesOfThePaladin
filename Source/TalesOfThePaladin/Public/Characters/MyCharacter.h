@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h" // Input action
 #include "Spells/SpellEnums.h"
+#include "Combat/AttackEnums.h"
 #include "MyCharacter.generated.h"
 
 class UInputAction; // Used for input mapping
@@ -77,6 +78,8 @@ protected:
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
+
+	EActiveAttackCharge ActiveAttackCharge = EActiveAttackCharge::EAC_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* SpellPickNumberSounds[2]; 
@@ -184,12 +187,17 @@ private:
 	TSubclassOf<AWeapon> WeaponClass{};
 
 	bool bIsAiming{}; 
+	bool bIsAttacking{};
 
 public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
+
+	// Combat
 	const bool GetAimState() const { return bIsAiming; }
+	const bool GetAttackState() const { return bIsAttacking; }
+	const EActiveAttackCharge GetActiveAttackCharge() const { return ActiveAttackCharge; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 
