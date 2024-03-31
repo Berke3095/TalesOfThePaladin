@@ -199,6 +199,20 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	}
 }
 
+void AMyCharacter::Charge(const FInputActionValue& InputValue)
+{
+	const bool Charge = InputValue.Get<bool>();
+	if (Charge)
+	{
+
+	}
+}
+
+void AMyCharacter::DropCharge()
+{
+
+}
+
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
 {
 	if (SpellSwitchWidget && SpellSwitchWidget->IsInViewport())
@@ -454,6 +468,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
+		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Started, this, &AMyCharacter::Charge);
+		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Completed, this, &AMyCharacter::DropCharge);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyCharacter::Sprint); 

@@ -38,6 +38,8 @@ protected:
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
+	void Charge(const FInputActionValue& InputValue);
+	void DropCharge();
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
@@ -110,7 +112,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* LookAction{};
 
-	// Charge
+	// Aim
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* AimAction{};
 
@@ -121,6 +123,10 @@ private:
 	// Spell switch
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* SpellSwitchAction{};
+
+	// Charge
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* ChargeAction{};
 
 	/*
 		WIDGETS
