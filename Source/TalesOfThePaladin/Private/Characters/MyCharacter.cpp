@@ -184,6 +184,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropAim()
 {
+	if (bIsCharging) { return; }
 	bIsAiming = false;
 	Weapon->WeaponMesh->SetVisibility(true);
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
@@ -207,7 +208,7 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 void AMyCharacter::Charge(const FInputActionValue& InputValue)
 {
 	const bool Charge = InputValue.Get<bool>();
-	if (Charge && bIsAiming && !bIsCharging && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+	if (Charge && !bIsAiming && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 	{
 		bIsCharging = true;
 		if (MyCharacterAnimInstance && ChargeAnimMontage)
@@ -219,6 +220,7 @@ void AMyCharacter::Charge(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropCharge()
 {
+	if (bIsAiming) { return; }
 	bIsCharging = false; 
 	bReadyToHeavyAttack = false;
 	GetWorldTimerManager().ClearTimer(ChargeTimer); 
