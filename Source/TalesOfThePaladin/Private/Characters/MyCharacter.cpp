@@ -212,6 +212,33 @@ void AMyCharacter::Charge(const FInputActionValue& InputValue)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 		}
+
+		int32 ChargeAnimSelection{};
+		FName SectionName = FName();
+		if (bIsCharging && !MyCharacterAnimInstance->Montage_IsPlaying(ChargeAttackMontage))
+		{
+			MyCharacterAnimInstance->Montage_Play(ChargeAttackMontage);
+
+			if (ActiveAttackCharge == EActiveAttackCharge::EAC_NONE) { ChargeAnimSelection = 0; }
+			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack1) { ChargeAnimSelection = 1; }
+			if (ActiveAttackCharge == EActiveAttackCharge::EAC_ChargingAttack2) { ChargeAnimSelection = 2; }
+
+			switch (ChargeAnimSelection)
+			{
+			case 0:
+				UE_LOG(LogTemp, Warning, TEXT("Charging First Attack"));
+				SectionName = FName("0"); 
+				if (!GetWorldTimerManager().IsTimerActive(ChargeAttackTimer))
+				{
+					GetWorld()->GetTimerManager().SetTimer(ChargeAttackTimer, this, &AMyCharacter::SetChargeAttackBoolToTrue, SecondsToHold);
+					if (bReadyToChargeAttack)
+					{
+					ActiveChargeAttack = EActiveChargeAttack::ECA_ChargeAttack1;
+					UE_LOG(LogTemp, Warning, TEXT("Ready to Attack 1"));
+					}
+				}
+			}
+		}
 	}
 }
 
