@@ -198,7 +198,6 @@ private:
 	FName HeavyAttackSectionIndex[9];
 
 	bool bCanHeavy{};
-	void SetCanHeavy();
 
 	bool bIsAiming{}; 
 

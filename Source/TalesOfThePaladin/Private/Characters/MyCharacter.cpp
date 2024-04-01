@@ -34,9 +34,6 @@
 // Components
 #include "Components/CapsuleComponent.h"
 
-// Timer
-#include "Engine/TimerHandle.h"
-
 AMyCharacter::AMyCharacter() // Defaults
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -223,7 +220,6 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	if (HeavyAttack && !bIsAiming)
 	{
 		bIsCharging = true;
-		float SecondsToCharge{1.8f};
 
 		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
@@ -240,10 +236,7 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
 			{
 				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackMontage);
-			}
-			if (!GetWorldTimerManager().IsTimerActive(ChargeTimer))
-			{
-				GetWorld()->GetTimerManager().SetTimer(ChargeTimer, this, &AMyCharacter::SetCanHeavy, SecondsToCharge, false); 
+				bCanHeavy = true;
 			}
 		}
 	}
@@ -254,7 +247,6 @@ void AMyCharacter::DropHeavyAttack()
 	if (bIsAiming) { return; }
 
 	bIsCharging = false;
-	GetWorldTimerManager().ClearTimer(ChargeTimer);
 	if (!bCanHeavy) // If charge is cut half, reset
 	{
 		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
@@ -501,11 +493,6 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	FRotator TargetActorRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), TargetActorRotation, DeltaTime, 10.0f);
 	SetActorRotation(InterpolatedRotation);
-}
-
-void AMyCharacter::SetCanHeavy()
-{
-	bCanHeavy = true;
 }
 
 void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
