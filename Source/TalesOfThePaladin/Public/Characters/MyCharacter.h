@@ -195,7 +195,7 @@ private:
 	bool bIsCharging{};
 	FTimerHandle ChargeTimer{};
 	int32 HeavyAttackIndex{};
-	FName HeavyAttackSectionIndex[7];
+	FName HeavyAttackSectionIndex[9];
 
 	bool bCanHeavy{};
 	void SetCanHeavy();

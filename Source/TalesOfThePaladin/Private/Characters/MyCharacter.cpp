@@ -105,7 +105,8 @@ void AMyCharacter::BeginPlay()
 
 	// HeavyAttackSectionIndex
 	HeavyAttackSectionIndex[0] = "0"; HeavyAttackSectionIndex[1] = "1"; HeavyAttackSectionIndex[2] = "2"; HeavyAttackSectionIndex[3] = "3";  
-	HeavyAttackSectionIndex[4] = "4"; HeavyAttackSectionIndex[5] = "5"; HeavyAttackSectionIndex[6] = "6";
+	HeavyAttackSectionIndex[4] = "4"; HeavyAttackSectionIndex[5] = "5"; HeavyAttackSectionIndex[6] = "6"; HeavyAttackSectionIndex[7] = "7"; 
+	HeavyAttackSectionIndex[8] = "8";
 }
 
 void AMyCharacter::Tick(float DeltaTime)
@@ -222,21 +223,21 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	if (HeavyAttack && !bIsAiming)
 	{
 		bIsCharging = true;
-		float SecondsToCharge{1.0f};
+		float SecondsToCharge{1.8f};
 
 		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
 			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionIndex[HeavyAttackIndex]);
 
-			if (HeavyAttackIndex == 0) // if just starting the combo, 0 is the initialize anim, go next and loop it as it is the actualy loop
+			if (HeavyAttackIndex == 0 || HeavyAttackIndex == 3 || HeavyAttackIndex == 6) // If charging to reach loop anim, increment again
 			{
 				if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 				{
 					HeavyAttackIndex++;
 				}
 			}
-			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 3 || HeavyAttackIndex == 5) // Loop in charge anims
+			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
 			{
 				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackMontage);
 			}
