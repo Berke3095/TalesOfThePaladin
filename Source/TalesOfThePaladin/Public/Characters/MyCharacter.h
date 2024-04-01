@@ -39,11 +39,19 @@ protected:
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
+	void Charge(const FInputActionValue& InputValue);
+	void DropCharge();
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* SpellCastMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HeavyMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* ChargeMontage{};
 
 	/*
 		CAMERA
@@ -68,10 +76,6 @@ protected:
 	const USkeletalMeshSocket* RightProjectileSocket {};
 	UPROPERTY(BlueprintReadOnly) 
 	const USkeletalMeshSocket* LeftProjectileSocket {};
-
-	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
-	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
-	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* SpellPickNumberSounds[2]; 
@@ -122,6 +126,10 @@ private:
 	// Spell switch
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* SpellSwitchAction{};
+
+	// Charge
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* ChargeAction{};
 
 	/*
 		WIDGETS
@@ -176,7 +184,13 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass{};
 
+	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
+	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
+	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
+
 	bool bIsAiming{}; 
+
+	bool bIsCharging{};
 
 public:
 	// to be shared with MyCharacter anim instance
