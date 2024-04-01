@@ -39,8 +39,7 @@ protected:
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
-	void Charge(const FInputActionValue& InputValue);
-	void DropCharge();
+	void HeavyAttack(const FInputActionValue& InputValue);
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
@@ -48,10 +47,7 @@ protected:
 	UAnimMontage* SpellCastMontage{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* HeavyMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* ChargeMontage{};
+	UAnimMontage* HeavyAttackMontage{};
 
 	/*
 		CAMERA
@@ -127,9 +123,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* SpellSwitchAction{};
 
-	// Charge
+	// Heavy attack
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UInputAction* ChargeAction{};
+	UInputAction* HeavyAttackAction{};
 
 	/*
 		WIDGETS
@@ -189,8 +185,6 @@ private:
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	bool bIsAiming{}; 
-
-	bool bIsCharging{};
 
 public:
 	// to be shared with MyCharacter anim instance

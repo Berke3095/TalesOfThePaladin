@@ -131,7 +131,7 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint && !bIsAiming && !bIsCharging)
+	if (Sprint && !bIsAiming)
 	{
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
@@ -152,7 +152,7 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropSprint()
 {
-	if (bIsAiming || bIsCharging) { return; }
+	if (bIsAiming) { return; }
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 	bIsSprinting = false;
 }
@@ -171,7 +171,7 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
 	const bool Aim = InputValue.Get<bool>();
-	if (Aim && !bIsCharging)
+	if (Aim)
 	{
 		bIsAiming = true; 
 		Weapon->WeaponMesh->SetVisibility(false);
@@ -181,7 +181,6 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropAim()
 {
-	if (bIsCharging) { return; }
 	bIsAiming = false;
 	Weapon->WeaponMesh->SetVisibility(true);
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
@@ -202,21 +201,16 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	}
 }
 
-void AMyCharacter::Charge(const FInputActionValue& InputValue)
+void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
-	const bool Charge = InputValue.Get<bool>();
-	if (Charge && !bIsAiming)
+	const bool Attack = InputValue.Get<bool>();
+	if (Attack)
 	{
-		bIsCharging = true;
-		GetCharacterMovement()->MaxWalkSpeed = 0.0f;	
+		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) 
+		{
+			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
+		}
 	}
-}
-
-void AMyCharacter::DropCharge()
-{
-	if (bIsAiming) { return; }
-	bIsCharging = false;
-	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
@@ -474,8 +468,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
-		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Started, this, &AMyCharacter::Charge);
-		EnhancedInputComponent->BindAction(ChargeAction, ETriggerEvent::Completed, this, &AMyCharacter::DropCharge);
+		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyCharacter::Sprint); 
