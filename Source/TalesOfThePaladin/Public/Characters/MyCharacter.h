@@ -89,6 +89,9 @@ private:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; // Bind functionality to input
 
+	UFUNCTION()
+	void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
 	/*
 		COMPONENTS
 	*/
@@ -181,8 +184,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass{};
 
-	UFUNCTION()
-	void OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+	int32 ComboInt{};
 
 	// Spell pick
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
@@ -191,7 +193,8 @@ private:
 
 	// HeavyAttack
 	bool bIsCharging{};
-	int32 HeavyAttackIndex{1};
+	FTimerHandle ChargeTimer{};
+	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionIndex[7];
 
 	bool bCanHeavy{};

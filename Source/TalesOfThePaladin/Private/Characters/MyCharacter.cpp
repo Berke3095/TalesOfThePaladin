@@ -97,7 +97,7 @@ void AMyCharacter::BeginPlay()
 	MyCharacterAnimInstance = Cast<UMyCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (MyCharacterAnimInstance)
 	{
-		MyCharacterAnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AMyCharacter::OnMontageNotifyBegin);
+		MyCharacterAnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AMyCharacter::OnNotifyBegin);
 	}
 
 	RightProjectileSocket = GetMesh()->GetSocketByName(FName("RightProjectileSocket"));   
@@ -222,17 +222,28 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	if (HeavyAttack && !bIsAiming)
 	{
 		bIsCharging = true;
+		float SecondsToCharge{1.0f};
 
-		if (HeavyAttackMontage)
+		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
-			if(HeavyAttackIndex == 1 || HeavyAttackIndex == 3 || HeavyAttackIndex == 5)
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-
 			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionIndex[HeavyAttackIndex]);
-			MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackMontage);
 
-			FTimerHandle ChargeTimer{};
-			GetWorld()->GetTimerManager().SetTimer(ChargeTimer, this, &AMyCharacter::SetCanHeavy, 2.0f, false);
+			if (HeavyAttackIndex == 0) // if just starting the combo, 0 is the initialize anim, go next and loop it as it is the actualy loop
+			{
+				if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+				{
+					HeavyAttackIndex++;
+				}
+			}
+			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 3 || HeavyAttackIndex == 5) // Loop in charge anims
+			{
+				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackMontage);
+			}
+			if (!GetWorldTimerManager().IsTimerActive(ChargeTimer))
+			{
+				GetWorld()->GetTimerManager().SetTimer(ChargeTimer, this, &AMyCharacter::SetCanHeavy, SecondsToCharge, false); 
+			}
 		}
 	}
 }
@@ -242,26 +253,27 @@ void AMyCharacter::DropHeavyAttack()
 	if (bIsAiming) { return; }
 
 	bIsCharging = false;
-	if (!bCanHeavy)
+	GetWorldTimerManager().ClearTimer(ChargeTimer);
+	if (!bCanHeavy) // If charge is cut half, reset
 	{
 		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
-		HeavyAttackIndex = 1;
+		HeavyAttackIndex = 0;
 	}
 	else if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
 	{
-		HeavyAttackIndex++;
+		HeavyAttackIndex++; // Increment to play the current attack anim
 		MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
 		MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionIndex[HeavyAttackIndex]);
-		bCanHeavy = false;
-		if (HeavyAttackIndex < 6)
+		if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Increment to charge anim
 		{
 			HeavyAttackIndex++;
-		}
-		else if (HeavyAttackIndex == 6)
-		{
-			HeavyAttackIndex = 1;
-		}
+			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Reset if end of sequence
+			{
+				HeavyAttackIndex = 0;
+			}
+		}	
 	}
+	bCanHeavy = false; 
 }
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
@@ -490,14 +502,18 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	SetActorRotation(InterpolatedRotation);
 }
 
-void AMyCharacter::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
-{
-
-}
-
 void AMyCharacter::SetCanHeavy()
 {
 	bCanHeavy = true;
+}
+
+void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && !bIsCharging) // If the anim is coming to an end and you are not charging
+	{
+		HeavyAttackIndex = 0;
+		MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
+	}
 }
 
 const AWeapon* AMyCharacter::GetWeapon()
@@ -529,7 +545,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
-		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Started, this, &AMyCharacter::HeavyAttack);
+		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropHeavyAttack);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
@@ -537,5 +553,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMyCharacter::DropSprint); 
 	}
 }
+
+
 
 
