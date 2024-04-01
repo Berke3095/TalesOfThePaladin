@@ -92,6 +92,10 @@ void AMyCharacter::BeginPlay()
 
 	// Get reference for mycharacter animinstance 
 	MyCharacterAnimInstance = Cast<UMyCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (MyCharacterAnimInstance)
+	{
+		MyCharacterAnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &AMyCharacter::OnMontageNotifyBegin);
+	}
 
 	RightProjectileSocket = GetMesh()->GetSocketByName(FName("RightProjectileSocket"));   
 	LeftProjectileSocket = GetMesh()->GetSocketByName(FName("LeftProjectileSocket")); 
@@ -103,6 +107,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("HeavyDec: %d"), HeavyAttackComboDec);
 }
 
 /*
@@ -203,13 +209,16 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
-	const bool Attack = InputValue.Get<bool>();
-	if (Attack)
+	const bool HeavyAttack = InputValue.Get<bool>();
+	if (HeavyAttack)
 	{
 		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) 
 		{
+			HeavyAttackComboDec = 0;
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
+			HeavyAttackComboDec++;
 		}
+		else { HeavyAttackComboDec++; }
 	}
 }
 
@@ -439,6 +448,19 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 	SetActorRotation(InterpolatedRotation);
 }
 
+void AMyCharacter::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (MyCharacterAnimInstance && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+	{
+		HeavyAttackComboDec--;
+		if (HeavyAttackComboDec < 1)
+		{
+			MyCharacterAnimInstance->Montage_Stop(0.5f, HeavyAttackMontage);
+			HeavyAttackComboDec = 0;
+		}
+	}
+}
+
 const AWeapon* AMyCharacter::GetWeapon()
 {
 	if (Weapon)
@@ -468,7 +490,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
-		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);
+		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Started, this, &AMyCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyCharacter::Sprint); 
