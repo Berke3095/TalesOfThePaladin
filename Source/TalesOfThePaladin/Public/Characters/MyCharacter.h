@@ -40,6 +40,7 @@ protected:
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
 	void HeavyAttack(const FInputActionValue& InputValue);
+	void DropHeavyAttack();
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
@@ -180,15 +181,21 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass{};
 
+	UFUNCTION()
+	void OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
 	// Spell pick
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	// HeavyAttack
-	UFUNCTION()
-	void OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-	int32 HeavyAttackComboDec{};
+	bool bIsCharging{};
+	int32 HeavyAttackIndex{1};
+	FName HeavyAttackSectionIndex[7];
+
+	bool bCanHeavy{};
+	void SetCanHeavy();
 
 	bool bIsAiming{}; 
 
