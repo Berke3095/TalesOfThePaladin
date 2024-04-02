@@ -142,8 +142,9 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint && !bIsAiming)
+	if (Sprint)
 	{
+		if (bIsAiming) { return; }
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
 		FVector VelocityDirection = GetVelocity().GetSafeNormal();
@@ -184,6 +185,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 	const bool Aim = InputValue.Get<bool>();
 	if (Aim && !bIsCharging)
 	{
+		if (bIsCharging) { return; }
 		bIsAiming = true; 
 		Weapon->WeaponMesh->SetVisibility(false);
 		GetCharacterMovement()->MaxWalkSpeed = AimSpeed; 
@@ -216,8 +218,9 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack && !bIsAiming)
+	if (HeavyAttack)
 	{
+		if (bIsAiming) { return; }
 		bIsCharging = true;
 		bIsAttacking = true;
 
