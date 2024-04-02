@@ -191,10 +191,10 @@ private:
 
 	// HeavyAttack
 	bool bIsCharging{};
+	bool bCanHeavy{}; // Full charged
+	bool bHeavyLocked{}; // if true, not able to interrupt heavy attack anim
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionIndex[9];
-
-	bool bCanHeavy{};
 
 	bool bIsAiming{};
 	bool bIsAttacking{};

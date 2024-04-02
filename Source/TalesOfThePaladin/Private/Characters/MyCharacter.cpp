@@ -183,9 +183,9 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
 	const bool Aim = InputValue.Get<bool>();
-	if (Aim && !bIsCharging)
+	if (Aim)
 	{
-		if (bIsCharging) { return; }
+		if (bIsAttacking) { return; }
 		bIsAiming = true; 
 		Weapon->WeaponMesh->SetVisibility(false);
 		GetCharacterMovement()->MaxWalkSpeed = AimSpeed; 
@@ -194,7 +194,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropAim()
 {
-	if (bIsCharging) { return; }
+	if (bIsAttacking) { return; }
 	bIsAiming = false;
 	Weapon->WeaponMesh->SetVisibility(true);
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
@@ -247,9 +247,10 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropHeavyAttack()
 {
-	if (bIsAiming) { return; }
+	if (bIsAiming || bHeavyLocked) { return; }
 
 	bIsCharging = false;
+	bHeavyLocked = true;
 	if (!bCanHeavy) // If charge is cut half, reset
 	{
 		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
@@ -508,9 +509,13 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 			MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
 			bIsAttacking = false;
 		}
-		if (NotifyName == FName("Reset bIsAttacking"))
+		if (NotifyName == FName("bIsAttacking0"))
 		{
 			bIsAttacking = false;
+		}
+		if (NotifyName == FName("bHeavyLocked0"))
+		{
+			bHeavyLocked = false;
 		}
 	}
 }
