@@ -522,7 +522,7 @@ const AWeapon* AMyCharacter::GetWeapon()
 	else
 	{
 		return nullptr;
-	}
+	} 
 }
 
 // Bind functionality to input
