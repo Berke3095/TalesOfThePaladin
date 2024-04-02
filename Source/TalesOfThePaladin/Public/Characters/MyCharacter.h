@@ -193,7 +193,6 @@ private:
 
 	// HeavyAttack
 	bool bIsCharging{};
-	FTimerHandle ChargeTimer{};
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionIndex[9];
 
