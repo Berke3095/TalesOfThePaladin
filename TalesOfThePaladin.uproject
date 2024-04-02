@@ -22,5 +22,9 @@
 				"Editor"
 			]
 		}
+	],
+	"TargetPlatforms": [
+		"Mac",
+		"Windows"
 	]
 }
