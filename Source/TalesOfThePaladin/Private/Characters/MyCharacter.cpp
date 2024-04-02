@@ -332,7 +332,6 @@ void AMyCharacter::SpellKeyPressed(FKey Key) // Pick spell if pressed respective
 				IndexNum++;
 				ThunderBallNumbers[0]->SetOpacity(0.5f);
 				FireBallNumbers[0]->SetOpacity(0.5f);
-				UE_LOG(LogTemp, Warning, TEXT("Projectile pick initiated"));
 			}
 			else
 			{

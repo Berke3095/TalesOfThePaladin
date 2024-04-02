@@ -79,16 +79,6 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	{
 		ProjectileAudioComponent->Stop();
 		ProjectileAudioComponent->DestroyComponent();
-
-		if (ProjectileAudioComponent->IsPendingKill())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Projectile Audio Component Destroyed Successfully"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Projectile Audio Component NOT Destroyed"));
-		}
-
 	}
 	Destroy();
 }
