@@ -184,8 +184,6 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AWeapon> WeaponClass{};
 
-	int32 ComboInt{};
-
 	// Spell pick
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
