@@ -113,8 +113,7 @@ void AMyCharacter::Tick(float DeltaTime)
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("HeavyAttackIndex: %d"), HeavyAttackIndex);
-	UE_LOG(LogTemp, Warning, TEXT("Can heavy: %s"), bCanHeavy ? TEXT("true") : TEXT("false"));
+	UE_LOG(LogTemp, Warning, TEXT("Is attacking: %s"), bIsAttacking ? TEXT("true") : TEXT("false")); 
 }
 
 /*
@@ -220,6 +219,7 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	if (HeavyAttack && !bIsAiming)
 	{
 		bIsCharging = true;
+		bIsAttacking = true;
 
 		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
@@ -251,6 +251,7 @@ void AMyCharacter::DropHeavyAttack()
 	{
 		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
 		HeavyAttackIndex = 0;
+		bIsAttacking = false;
 	}
 	else if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
 	{
@@ -263,6 +264,7 @@ void AMyCharacter::DropHeavyAttack()
 			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Reset if end of sequence
 			{
 				HeavyAttackIndex = 0;
+				bIsAttacking = false;
 			}
 		}	
 	}
@@ -501,6 +503,7 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 	{
 		HeavyAttackIndex = 0;
 		MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
+		bIsAttacking = false;
 	}
 }
 

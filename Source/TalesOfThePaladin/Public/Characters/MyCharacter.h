@@ -199,7 +199,8 @@ private:
 
 	bool bCanHeavy{};
 
-	bool bIsAiming{}; 
+	bool bIsAiming{};
+	bool bIsAttacking{};
 
 public:
 	// to be shared with MyCharacter anim instance
@@ -208,6 +209,7 @@ public:
 
 	// Combat
 	const bool GetAimState() const { return bIsAiming; }
+	const bool GetAttackState() const { return bIsAttacking; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 

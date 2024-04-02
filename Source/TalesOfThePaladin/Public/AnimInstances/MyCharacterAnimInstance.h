@@ -55,5 +55,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsAiming{};
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsAttacking{};
+
 	const class AWeapon* Weapon{};
 };
