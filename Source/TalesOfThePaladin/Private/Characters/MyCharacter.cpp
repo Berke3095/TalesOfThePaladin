@@ -264,7 +264,6 @@ void AMyCharacter::DropHeavyAttack()
 			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Reset if end of sequence
 			{
 				HeavyAttackIndex = 0;
-				bIsAttacking = false;
 			}
 		}	
 	}
@@ -499,11 +498,18 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 
 void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
-	if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && !bIsCharging) // If the anim is coming to an end and you are not charging
+	if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // If the anim is coming to an end and you want to discontinue
 	{
-		HeavyAttackIndex = 0;
-		MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
-		bIsAttacking = false;
+		if (NotifyName == FName("Reset") && !bIsCharging)
+		{
+			HeavyAttackIndex = 0;
+			MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
+			bIsAttacking = false;
+		}
+		if (NotifyName == FName("Reset bIsAttacking"))
+		{
+			bIsAttacking = false;
+		}
 	}
 }
 
