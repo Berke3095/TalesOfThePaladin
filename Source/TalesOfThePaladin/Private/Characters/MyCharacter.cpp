@@ -101,9 +101,9 @@ void AMyCharacter::BeginPlay()
 	LeftProjectileSocket = GetMesh()->GetSocketByName(FName("LeftProjectileSocket")); 
 
 	// HeavyAttackSectionIndex
-	HeavyAttackSectionIndex[0] = "0"; HeavyAttackSectionIndex[1] = "1"; HeavyAttackSectionIndex[2] = "2"; HeavyAttackSectionIndex[3] = "3";  
-	HeavyAttackSectionIndex[4] = "4"; HeavyAttackSectionIndex[5] = "5"; HeavyAttackSectionIndex[6] = "6"; HeavyAttackSectionIndex[7] = "7"; 
-	HeavyAttackSectionIndex[8] = "8";
+	HeavyAttackSectionArray[0] = "0"; HeavyAttackSectionArray[1] = "1"; HeavyAttackSectionArray[2] = "2"; HeavyAttackSectionArray[3] = "3";  
+	HeavyAttackSectionArray[4] = "4"; HeavyAttackSectionArray[5] = "5"; HeavyAttackSectionArray[6] = "6"; HeavyAttackSectionArray[7] = "7"; 
+	HeavyAttackSectionArray[8] = "8";
 }
 
 void AMyCharacter::Tick(float DeltaTime)
@@ -221,14 +221,14 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	const bool HeavyAttack = InputValue.Get<bool>();
 	if (HeavyAttack)
 	{
-		if (bIsAiming) { return; }
+		if (bIsAiming || bHeavyLocked) { return; }
 		bIsCharging = true;
 		bIsAttacking = true;
 
 		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionIndex[HeavyAttackIndex]);
+			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
 
 			if (HeavyAttackIndex == 0 || HeavyAttackIndex == 3 || HeavyAttackIndex == 6) // If charging to reach loop anim, increment again
 			{
@@ -239,7 +239,7 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 			}
 			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
 			{
-				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackSectionIndex[HeavyAttackIndex], HeavyAttackMontage);
+				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackMontage);
 				bCanHeavy = true;
 			}
 		}
@@ -263,17 +263,18 @@ void AMyCharacter::DropHeavyAttack()
 	{
 		HeavyAttackIndex++; // Increment to play the current attack anim
 		MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-		MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionIndex[HeavyAttackIndex]);
-		if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Increment to charge anim
+		MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
+		if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Increment to charge anim
 		{
 			HeavyAttackIndex++;
-			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionIndex)) // Reset if end of sequence
+			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
 			{
 				HeavyAttackIndex = 0;
+				// Turning bIsAttacking to false in anim notify begin
 			}
 		}	
-	}
-	bCanHeavy = false; 
+	}	
+	bCanHeavy = false;
 }
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
@@ -481,6 +482,31 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 	{
 		InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 10.f);
 		CharacterYaw = InterptYaw;
+
+		if (MyCharacterAnimInstance && TurnInPlaceMontage)
+		{
+			MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
+
+			int32 CaseInt{};
+			FName SectionName{};
+
+			if (CharacterYaw < -TurnInPlaceLimit) { CaseInt = 0; }
+			else if (CharacterYaw > TurnInPlaceLimit) { CaseInt = 1; }
+
+			switch (CaseInt)
+			{
+			case 0:
+				SectionName = FName("0");
+				break;
+			case 1:
+				SectionName = FName("1");
+				break;
+			default:
+				break;
+			}
+
+			MyCharacterAnimInstance->Montage_JumpToSection(SectionName, TurnInPlaceMontage);
+		}
 
 		if (FMath::Abs(CharacterYaw) < 5.f)
 		{

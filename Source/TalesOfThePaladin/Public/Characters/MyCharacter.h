@@ -3,7 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h" // Input action
+
+// Enums
 #include "Spells/SpellEnums.h"
+
 #include "MyCharacter.generated.h"
 
 class UInputAction; // Used for input mapping
@@ -49,6 +52,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* HeavyAttackMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TurnInPlaceMontage{};
 
 	/*
 		CAMERA
@@ -194,7 +200,7 @@ private:
 	bool bCanHeavy{}; // Full charged
 	bool bHeavyLocked{}; // if true, not able to interrupt heavy attack anim
 	int32 HeavyAttackIndex{};
-	FName HeavyAttackSectionIndex[9];
+	FName HeavyAttackSectionArray[9];
 
 	bool bIsAiming{};
 	bool bIsAttacking{};
