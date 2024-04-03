@@ -114,6 +114,7 @@ void AMyCharacter::Tick(float DeltaTime)
 	UseControllerYaw(DeltaTime);
 
 	UE_LOG(LogTemp, Warning, TEXT("Is attacking: %s"), bIsAttacking ? TEXT("true") : TEXT("false")); 
+	UE_LOG(LogTemp, Warning, TEXT("HeavyAttackIndex: %d"), HeavyAttackIndex);
 }
 
 /*
@@ -256,6 +257,7 @@ void AMyCharacter::DropHeavyAttack()
 		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
 		HeavyAttackIndex = 0;
 		bIsAttacking = false;
+		bHeavyLocked = false;
 	}
 	else if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
 	{
