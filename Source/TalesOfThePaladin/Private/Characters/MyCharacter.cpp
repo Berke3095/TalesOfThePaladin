@@ -492,10 +492,16 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 			int32 CaseInt{};
 			FName SectionName{};
 
-			if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; } // Turn left
-			else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; } // Turn Right
-
-			UE_LOG(LogTemp, Warning, TEXT("CaseInt: %d"), CaseInt);
+			if (bIsAiming)
+			{
+				if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 2; } // Turn left aiming
+				else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 3; } // Turn Right aiming
+			}
+			else
+			{
+				if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; } // Turn left
+				else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; } // Turn Right
+			}
 
 			switch (CaseInt)
 			{
@@ -504,6 +510,12 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 				break;
 			case 1:
 				SectionName = FName("1");
+				break;
+			case 2:
+				SectionName = FName("2");
+				break;
+			case 3:
+				SectionName = FName("3");
 				break;
 			default:
 				break;
