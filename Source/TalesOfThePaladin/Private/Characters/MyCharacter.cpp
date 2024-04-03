@@ -112,8 +112,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("TurnInPlace: %s"), bIsTurning ? TEXT("true") : TEXT("false"));
 }
 
 /*
@@ -374,7 +372,6 @@ void AMyCharacter::ProjectilePick(FKey Key,
 			ActiveSpell = EActiveSpell::EAS_FireBallSpell;
 			ChosenSkill = 0;
 			SpellSwitchDeactive();
-			UE_LOG(LogTemp, Warning, TEXT("FireBall spell picked"));
 		}
 		else
 		{
@@ -395,7 +392,6 @@ void AMyCharacter::ProjectilePick(FKey Key,
 			ActiveSpell = EActiveSpell::EAS_ThunderBallSpell;
 			ChosenSkill = 1;
 			SpellSwitchDeactive();
-			UE_LOG(LogTemp, Warning, TEXT("ThunderBall spell picked"));
 		}
 		else
 		{
@@ -496,8 +492,10 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 			int32 CaseInt{};
 			FName SectionName{};
 
-			if (CharacterYaw < -TurnInPlaceLimit) { CaseInt = 0; } // Turn left
-			else if (CharacterYaw > TurnInPlaceLimit) { CaseInt = 1; } // Turn Right
+			if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; } // Turn left
+			else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; } // Turn Right
+
+			UE_LOG(LogTemp, Warning, TEXT("CaseInt: %d"), CaseInt);
 
 			switch (CaseInt)
 			{
