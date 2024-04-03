@@ -50,6 +50,12 @@ protected:
 	FTransform OffHandTransform{};
 
 	/*
+		MOVEMENT
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	bool bIsTurning{};
+
+	/*
 		COMBAT
 	*/
 	UPROPERTY(BlueprintReadOnly)

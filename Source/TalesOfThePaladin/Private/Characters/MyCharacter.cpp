@@ -112,9 +112,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("Is attacking: %s"), bIsAttacking ? TEXT("true") : TEXT("false")); 
-	UE_LOG(LogTemp, Warning, TEXT("HeavyAttackIndex: %d"), HeavyAttackIndex);
 }
 
 /*
@@ -143,9 +140,8 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint)
+	if (Sprint && !bIsAiming)
 	{
-		if (bIsAiming) { return; }
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
 		FVector VelocityDirection = GetVelocity().GetSafeNormal();
@@ -219,9 +215,8 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack)
+	if (HeavyAttack && (!bIsAiming || !bHeavyLocked))
 	{
-		if (bIsAiming || bHeavyLocked) { return; }
 		bIsCharging = true;
 		bIsAttacking = true;
 
@@ -480,12 +475,14 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 {
 	if (FMath::Abs(CharacterYaw) > TurnInPlaceLimit)
 	{
-		InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 10.f);
+		InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 5.0f);
 		CharacterYaw = InterptYaw;
 
-		if (MyCharacterAnimInstance && TurnInPlaceMontage)
+		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage) && !bIsAttacking)
 		{
 			MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
+
+			bIsTurning = true;
 
 			int32 CaseInt{};
 			FName SectionName{};
@@ -516,6 +513,7 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 	else
 	{
 		InterptYaw = CharacterYaw;
+		bIsTurning = false;
 	}
 }
 

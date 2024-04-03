@@ -181,6 +181,8 @@ private:
 	const float AimSpeed{200.0f};
 	const float SprintSpeed{600.0f};
 
+	bool bIsTurning{};
+
 	bool bIsSprinting{};
 
 	/*
@@ -209,6 +211,8 @@ public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
+
+	const bool GetTurningState() const { return bIsTurning; }
 
 	// Combat
 	const bool GetAimState() const { return bIsAiming; }
