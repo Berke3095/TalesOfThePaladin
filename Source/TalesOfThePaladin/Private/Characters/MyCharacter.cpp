@@ -143,8 +143,9 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint && !bIsAiming)
+	if (Sprint)
 	{
+		if (bIsAiming) { return; }
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
 		FVector VelocityDirection = GetVelocity().GetSafeNormal();
@@ -218,8 +219,9 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack && (!bIsAiming || !bHeavyLocked))
+	if (HeavyAttack)
 	{
+		if (bIsAiming || bHeavyLocked) { return; }
 		bIsTurning = false;
 		bIsCharging = true;
 		bIsAttacking = true;
