@@ -490,8 +490,8 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 			int32 CaseInt{};
 			FName SectionName{};
 
-			if (CharacterYaw < -TurnInPlaceLimit) { CaseInt = 0; }
-			else if (CharacterYaw > TurnInPlaceLimit) { CaseInt = 1; }
+			if (CharacterYaw < -TurnInPlaceLimit) { CaseInt = 0; } // Turn left
+			else if (CharacterYaw > TurnInPlaceLimit) { CaseInt = 1; } // Turn Right
 
 			switch (CaseInt)
 			{
