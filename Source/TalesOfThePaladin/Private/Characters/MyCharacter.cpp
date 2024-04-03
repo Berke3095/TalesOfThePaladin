@@ -112,6 +112,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("TurnInPlace: %s"), bIsTurning ? TEXT("true") : TEXT("false"));
 }
 
 /*
@@ -123,6 +125,7 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 
 	if (IsValid(GetController()))
 	{
+		bIsTurning = false;
 		// Get controller yaw rotation
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		const FRotator ControlYawRotation(0, ControlRotation.Yaw, 0);
@@ -217,10 +220,11 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	const bool HeavyAttack = InputValue.Get<bool>();
 	if (HeavyAttack && (!bIsAiming || !bHeavyLocked))
 	{
+		bIsTurning = false;
 		bIsCharging = true;
 		bIsAttacking = true;
 
-		if (HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
+		if (MyCharacterAnimInstance && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
 			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
@@ -249,12 +253,15 @@ void AMyCharacter::DropHeavyAttack()
 	bHeavyLocked = true;
 	if (!bCanHeavy) // If charge is cut half, reset
 	{
-		MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
+		if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+		{
+			MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
+		}
 		HeavyAttackIndex = 0;
 		bIsAttacking = false;
 		bHeavyLocked = false;
 	}
-	else if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
+	else if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
 	{
 		HeavyAttackIndex++; // Increment to play the current attack anim
 		MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
