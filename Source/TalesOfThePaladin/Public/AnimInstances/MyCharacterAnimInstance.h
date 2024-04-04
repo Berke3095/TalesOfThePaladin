@@ -2,6 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+
+// Enums
+#include "Characters/CharacterStates.h"
+
 #include "MyCharacterAnimInstance.generated.h"
 
 // Character related classes
@@ -52,17 +56,17 @@ protected:
 	/*
 		MOVEMENT
 	*/
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	bool bIsTurning{};
+	UPROPERTY(BlueprintReadOnly)
+	ETurnState TurnState{};
+
+	UPROPERTY(BlueprintReadOnly)
+	EMoveState MoveState{};
 
 	/*
 		COMBAT
 	*/
 	UPROPERTY(BlueprintReadOnly)
-	bool bIsAiming{};
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsAttacking{};
+	EAttackState AttackState{};
 
 	const class AWeapon* Weapon{};
 };

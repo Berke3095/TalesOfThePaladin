@@ -42,14 +42,13 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		// Getting delta rotations for offset
 		CharacterYaw = MyCharacter->GetCharacterYaw();
 		CharacterPitch = MyCharacter->GetCharacterPitch();
+		TurnState = MyCharacter->GetTurnState();
+		MoveState = MyCharacter->GetMoveState();
 
-		bIsTurning = MyCharacter->GetTurningState();
-
-		bIsAiming = MyCharacter->GetAimState();
-		bIsAttacking = MyCharacter->GetAttackState();
+		AttackState = MyCharacter->GetAttackState();
 
 		Weapon = MyCharacter->GetWeapon();
-		if (Weapon && !bIsAttacking)
+		if (Weapon && AttackState == EAttackState::EATS_NONE)
 		{
 			OffHandTransform = Weapon->WeaponMesh->GetSocketTransform(FName("OffHandSocket"), ERelativeTransformSpace::RTS_World);
 			FVector OutPosition{};

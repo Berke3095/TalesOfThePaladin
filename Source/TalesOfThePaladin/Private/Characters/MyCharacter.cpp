@@ -112,8 +112,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("bThrowingProjectile: %s"), bThrowingProjectile ? TEXT("true") : TEXT("false"));
 }
 
 /*
@@ -125,7 +123,7 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 
 	if (IsValid(GetController()))
 	{
-		bIsTurning = false;
+		TurnState = ETurnState::ETS_NONE;
 		// Get controller yaw rotation
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		const FRotator ControlYawRotation(0, ControlRotation.Yaw, 0);
@@ -143,9 +141,8 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint)
+	if (Sprint && MoveState != EMoveState::EMS_AimState)
 	{
-		if (bIsAiming) { return; }
 		// Get Dot to calculate forwardish movement
 		FVector ForwardVector = GetActorForwardVector();
 		FVector VelocityDirection = GetVelocity().GetSafeNormal();
@@ -153,8 +150,8 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 
 		if (DotProductForward > 0.9f) // If moving forward
 		{
+			MoveState = EMoveState::EMS_SprintState;
 			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-			bIsSprinting = true;
 		}
 		else
 		{
@@ -165,9 +162,11 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropSprint()
 {
-	if (bIsAiming) { return; }
-	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-	bIsSprinting = false;
+	if (MoveState == EMoveState::EMS_SprintState)
+	{
+		MoveState = EMoveState::EMS_NONE;
+		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	}
 }
 
 void AMyCharacter::Look(const FInputActionValue& InputValue)
@@ -184,21 +183,22 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
 	const bool Aim = InputValue.Get<bool>();
-	if (Aim)
+	if (Aim && MoveState != EMoveState::EMS_SprintState)
 	{
-		if (bIsAttacking) { return; }
-		bIsAiming = true; 
+		MoveState = EMoveState::EMS_AimState;
+		GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
 		Weapon->WeaponMesh->SetVisibility(false);
-		GetCharacterMovement()->MaxWalkSpeed = AimSpeed; 
 	}
 }
 
 void AMyCharacter::DropAim()
 {
-	if (bIsAttacking) { return; }
-	bIsAiming = false;
-	Weapon->WeaponMesh->SetVisibility(true);
-	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	if (MoveState == EMoveState::EMS_AimState)
+	{
+		MoveState = EMoveState::EMS_NONE;
+		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+		Weapon->WeaponMesh->SetVisibility(true);
+	}
 }
 
 void AMyCharacter::Attack(const FInputActionValue& InputValue)
@@ -206,13 +206,12 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	const bool Attack = InputValue.Get<bool>();
 	if (Attack)
 	{
-		if (bIsAiming)
+		if (MoveState == EMoveState::EMS_AimState)
 		{
-			if (bIsAttacking) { return; }
 			if (MyCharacterAnimInstance && SpellCastMontage && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
 			{
+				AttackState = EAttackState::EATS_ProjectileAttacking;
 				PlayAnimMontage(SpellCastMontage);
-				bThrowingProjectile = true;
 			}
 		}
 	}
@@ -222,8 +221,8 @@ void AMyCharacter::DropAttack()
 {
 	if (MyCharacterAnimInstance && SpellCastMontage && MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
 	{
+		AttackState = EAttackState::EATS_NONE;
 		MyCharacterAnimInstance->Montage_Stop(0.5f, SpellCastMontage);
-		bThrowingProjectile = false;
 	}
 }
 
@@ -232,11 +231,11 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 	const bool HeavyAttack = InputValue.Get<bool>();
 	if (HeavyAttack)
 	{
-		if (bIsAiming || bHeavyLocked) { return; }
-		bIsTurning = false;
-		bIsCharging = true;
-		bIsAttacking = true;
+		if (bHeavyLocked) { return; }
 
+		AttackState = EAttackState::EATS_HeavyAttacking; 
+		bIsCharging = true;
+		
 		if (MyCharacterAnimInstance && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 		{
 			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
@@ -246,13 +245,14 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 			{
 				if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 				{
+					HeavyAttackState = EHeavyAttackState::EHAS_ChargingHeavy;
 					HeavyAttackIndex++;
 				}
 			}
 			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
 			{
+				HeavyAttackState = EHeavyAttackState::EHAS_ChargeLooping;
 				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackMontage);
-				bCanHeavy = true;
 			}
 		}
 	}
@@ -260,22 +260,24 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropHeavyAttack()
 {
-	if (bIsAiming || bHeavyLocked) { return; }
+	if (bHeavyLocked) { return; }
 
 	bIsCharging = false;
 	bHeavyLocked = true;
-	if (!bCanHeavy) // If charge is cut half, reset
+	if (HeavyAttackState != EHeavyAttackState::EHAS_ChargeLooping) // If charge is cut half, reset 
 	{
 		if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 		{
 			MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
 		}
 		HeavyAttackIndex = 0;
-		bIsAttacking = false;
+		AttackState = EAttackState::EATS_NONE;
+		HeavyAttackState = EHeavyAttackState::EHAS_NONE; 
 		bHeavyLocked = false;
 	}
-	else if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && bCanHeavy)
+	else if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && HeavyAttackState == EHeavyAttackState::EHAS_ChargeLooping)
 	{
+		HeavyAttackState = EHeavyAttackState::EHAS_HeavyAttacking;
 		HeavyAttackIndex++; // Increment to play the current attack anim
 		MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
 		MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
@@ -285,11 +287,10 @@ void AMyCharacter::DropHeavyAttack()
 			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
 			{
 				HeavyAttackIndex = 0;
-				// Turning bIsAttacking to false in anim notify begin
+				// AttackState set to none in anim notify begin
 			}
 		}	
 	}	
-	bCanHeavy = false;
 }
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
@@ -501,26 +502,16 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 		}
 
-		if (bIsAttacking || bThrowingProjectile) { return; }
+		if (AttackState != EAttackState::EATS_NONE) { return; }
 		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
 		{
 			MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
 
-			bIsTurning = true;
-
 			int32 CaseInt{};
 			FName SectionName{};
 
-			if (bIsAiming)
-			{
-				if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 2; } // Turn left aiming
-				else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 3; } // Turn Right aiming
-			}
-			else
-			{
-				if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; } // Turn left
-				else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; } // Turn Right
-			}
+			if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; TurnState = ETurnState::ETS_TurnLeft; } // Turn left
+			else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; TurnState = ETurnState::ETS_TurnRight; } // Turn Right
 
 			switch (CaseInt)
 			{
@@ -529,12 +520,6 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 				break;
 			case 1:
 				SectionName = FName("1");
-				break;
-			case 2:
-				SectionName = FName("2");
-				break;
-			case 3:
-				SectionName = FName("3");
 				break;
 			default:
 				break;
@@ -546,7 +531,7 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 	else
 	{
 		InterptYaw = CharacterYaw;
-		bIsTurning = false;
+		TurnState = ETurnState::ETS_NONE;
 	}
 }
 
@@ -564,15 +549,17 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 	{
 		if (NotifyName == FName("Reset") && !bIsCharging)
 		{
+			AttackState = EAttackState::EATS_NONE;
+			HeavyAttackState = EHeavyAttackState::EHAS_NONE;
 			HeavyAttackIndex = 0;
 			MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
-			bIsAttacking = false;
 		}
-		if (NotifyName == FName("bIsAttacking0"))
+		if (NotifyName == FName("AttackState0"))
 		{
-			bIsAttacking = false;
+			AttackState = EAttackState::EATS_NONE;
+			HeavyAttackState = EHeavyAttackState::EHAS_NONE; 
 		}
-		if (NotifyName == FName("bHeavyLocked0"))
+		if (NotifyName == FName("bHeavyLocked0")) // Open the lock and ready to trigger the following attack
 		{
 			bHeavyLocked = false;
 		}

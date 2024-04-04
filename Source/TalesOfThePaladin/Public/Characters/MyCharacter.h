@@ -6,6 +6,7 @@
 
 // Enums
 #include "Spells/SpellEnums.h"
+#include "Characters/CharacterStates.h"
 
 #include "MyCharacter.generated.h"
 
@@ -96,6 +97,14 @@ private:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; // Bind functionality to input
 
+	/*
+		STATES
+	*/
+	EAttackState AttackState = EAttackState::EATS_NONE;
+	EMoveState MoveState = EMoveState::EMS_NONE;
+	ETurnState TurnState = ETurnState::ETS_NONE;
+	EHeavyAttackState HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+
 	UFUNCTION()
 	void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
@@ -178,13 +187,9 @@ private:
 	*/
 	void UseControllerYaw(float DeltaTime);
 
+	const float AimSpeed{ 200.0f };
 	const float DefaultSpeed{400.0f};
-	const float AimSpeed{200.0f};
 	const float SprintSpeed{600.0f};
-
-	bool bIsTurning{};
-
-	bool bIsSprinting{};
 
 	/*
 		COMBAT
@@ -199,28 +204,20 @@ private:
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
 	// Heavy attack
-	bool bIsCharging{};
-	bool bCanHeavy{}; // Full charged
 	bool bHeavyLocked{}; // if true, not able to interrupt heavy attack anim
+	bool bIsCharging{}; // If not charging again after release, stop heavy attack sequence
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionArray[9];
-
-	// Projectile attack
-	bool bThrowingProjectile{};
-
-	bool bIsAiming{};
-	bool bIsAttacking{};
 
 public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
 	const float GetCharacterPitch() const { return CharacterPitch; }
 
-	const bool GetTurningState() const { return bIsTurning; }
-
-	// Combat
-	const bool GetAimState() const { return bIsAiming; }
-	const bool GetAttackState() const { return bIsAttacking; }
+	// States
+	const EMoveState GetMoveState() const { return MoveState; }
+	const EAttackState GetAttackState() const { return AttackState; }
+	const ETurnState GetTurnState() const { return TurnState; }
 
 	// For fabric
 	const AWeapon* GetWeapon(); 
