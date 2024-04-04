@@ -197,7 +197,7 @@ private:
 	EActiveSpell ActiveSpell = EActiveSpell::EAS_NONE;
 	EActiveSpellTypePick ActiveSpellTypePick = EActiveSpellTypePick::EASTP_NONE;
 
-	// HeavyAttack
+	// Heavy attack
 	bool bIsCharging{};
 	bool bCanHeavy{}; // Full charged
 	bool bHeavyLocked{}; // if true, not able to interrupt heavy attack anim

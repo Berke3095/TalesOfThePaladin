@@ -206,7 +206,7 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	{
 		if (bIsAiming)
 		{
-			if (MyCharacterAnimInstance && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
+			if (MyCharacterAnimInstance && SpellCastMontage && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
 			{
 				PlayAnimMontage(SpellCastMontage);
 			}
