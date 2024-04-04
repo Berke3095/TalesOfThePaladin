@@ -229,10 +229,8 @@ void AMyCharacter::DropAttack()
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack)
+	if (HeavyAttack && !bHeavyLocked)
 	{
-		if (bHeavyLocked) { return; }
-
 		AttackState = EAttackState::EATS_HeavyAttacking; 
 		bIsCharging = true;
 		
@@ -264,33 +262,36 @@ void AMyCharacter::DropHeavyAttack()
 
 	bIsCharging = false;
 	bHeavyLocked = true;
-	if (HeavyAttackState != EHeavyAttackState::EHAS_ChargeLooping) // If charge is cut half, reset 
+	if (MyCharacterAnimInstance && HeavyAttackMontage)
 	{
-		if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+		if (HeavyAttackState != EHeavyAttackState::EHAS_ChargeLooping) // If charge is cut half, reset 
 		{
-			MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
-		}
-		HeavyAttackIndex = 0;
-		AttackState = EAttackState::EATS_NONE;
-		HeavyAttackState = EHeavyAttackState::EHAS_NONE; 
-		bHeavyLocked = false;
-	}
-	else if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && HeavyAttackState == EHeavyAttackState::EHAS_ChargeLooping)
-	{
-		HeavyAttackState = EHeavyAttackState::EHAS_HeavyAttacking;
-		HeavyAttackIndex++; // Increment to play the current attack anim
-		MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-		MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
-		if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Increment to charge anim
-		{
-			HeavyAttackIndex++;
-			if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
+			if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 			{
-				HeavyAttackIndex = 0;
-				// AttackState set to none in anim notify begin
+				MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
 			}
-		}	
-	}	
+			HeavyAttackIndex = 0;
+			AttackState = EAttackState::EATS_NONE;
+			HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+			bHeavyLocked = false;
+		}
+		else if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && HeavyAttackState == EHeavyAttackState::EHAS_ChargeLooping)
+		{
+			HeavyAttackState = EHeavyAttackState::EHAS_HeavyAttacking;
+			HeavyAttackIndex++; // Increment to play the current attack anim
+			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
+			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
+			if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Increment to charge anim
+			{
+				HeavyAttackIndex++;
+				if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
+				{
+					HeavyAttackIndex = 0;
+					// AttackState set to none in anim notify begin
+				}
+			}
+		}
+	}
 }
 
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
