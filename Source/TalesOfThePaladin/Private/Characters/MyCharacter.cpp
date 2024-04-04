@@ -112,6 +112,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("bThrowingProjectile: %s"), bThrowingProjectile ? TEXT("true") : TEXT("false"));
 }
 
 /*
@@ -206,11 +208,22 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	{
 		if (bIsAiming)
 		{
+			if (bIsAttacking) { return; }
 			if (MyCharacterAnimInstance && SpellCastMontage && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
 			{
 				PlayAnimMontage(SpellCastMontage);
+				bThrowingProjectile = true;
 			}
 		}
+	}
+}
+
+void AMyCharacter::DropAttack()
+{
+	if (MyCharacterAnimInstance && SpellCastMontage && MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
+	{
+		MyCharacterAnimInstance->Montage_Stop(0.5f, SpellCastMontage);
+		bThrowingProjectile = false;
 	}
 }
 
@@ -483,7 +496,13 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 		InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 5.0f);
 		CharacterYaw = InterptYaw;
 
-		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage) && !bIsAttacking)
+		if (FMath::Abs(CharacterYaw) < 5.f)
+		{
+			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		}
+
+		if (bIsAttacking || bThrowingProjectile) { return; }
+		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
 		{
 			MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
 
@@ -523,11 +542,6 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 
 			MyCharacterAnimInstance->Montage_JumpToSection(SectionName, TurnInPlaceMontage);
 		}
-
-		if (FMath::Abs(CharacterYaw) < 5.f)
-		{
-			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
-		}
 	}
 	else
 	{
@@ -546,7 +560,7 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 
 void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
-	if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // If the anim is coming to an end and you want to discontinue
+	if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // If the anim is coming to an end and you want to discontinue
 	{
 		if (NotifyName == FName("Reset") && !bIsCharging)
 		{
@@ -594,6 +608,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropHeavyAttack);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);

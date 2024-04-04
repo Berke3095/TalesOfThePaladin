@@ -42,6 +42,7 @@ protected:
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
 	void Attack(const FInputActionValue& InputValue);
+	void DropAttack();
 	void HeavyAttack(const FInputActionValue& InputValue);
 	void DropHeavyAttack();
 	void SpellSwitchDeactive();
@@ -203,6 +204,9 @@ private:
 	bool bHeavyLocked{}; // if true, not able to interrupt heavy attack anim
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionArray[9];
+
+	// Projectile attack
+	bool bThrowingProjectile{};
 
 	bool bIsAiming{};
 	bool bIsAttacking{};
