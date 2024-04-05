@@ -229,7 +229,7 @@ void AMyCharacter::DropAttack()
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack && !bHeavyLocked)
+	if (HeavyAttack && !bHeavyLocked && MoveState != EMoveState::EMS_AimState)
 	{
 		AttackState = EAttackState::EATS_HeavyAttacking; 
 		bIsCharging = true;
