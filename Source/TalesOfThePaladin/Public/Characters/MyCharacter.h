@@ -7,7 +7,6 @@
 // Enums
 #include "Spells/SpellEnums.h"
 #include "Characters/CharacterStates.h"
-
 #include "MyCharacter.generated.h"
 
 class UInputAction; // Used for input mapping
@@ -89,6 +88,12 @@ protected:
 		OFFSET
 	*/
 	void AimOffset(float DeltaTime);
+
+	/*
+		CAMERA
+	*/
+	UPROPERTY(BlueprintReadOnly)
+	float ShakeOuterRadius{};
 
 private:
 
@@ -208,6 +213,11 @@ private:
 	bool bIsCharging{}; // If not charging again after release, stop heavy attack sequence
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionArray[9];
+
+	/*
+		CAMERA
+	*/
+	class UImpactCameraShake* ImpactCameraShake{};
 
 public:
 	// to be shared with MyCharacter anim instance

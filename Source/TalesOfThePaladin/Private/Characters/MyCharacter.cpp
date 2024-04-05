@@ -18,7 +18,6 @@
 // Kismet
 #include "Kismet/KismetMathLibrary.h" // Math
 #include "Kismet/GameplayStatics.h" 
-
 #include "Sound/SoundCue.h" // Sound
 
 // Widget
@@ -151,7 +150,7 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 		if (DotProductForward > 0.9f) // If moving forward
 		{
 			MoveState = EMoveState::EMS_SprintState;
-			GetCharacterMovement()->MaxAcceleration = 400.0f; // Slower accelaration for blending to sprint anim
+			ShakeOuterRadius = 200.0f;
 			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 		}
 		else
@@ -166,7 +165,6 @@ void AMyCharacter::DropSprint()
 	if (MoveState == EMoveState::EMS_SprintState)
 	{
 		MoveState = EMoveState::EMS_NONE;
-		GetCharacterMovement()->MaxAcceleration = 2048.0f;
 		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 	}
 }
