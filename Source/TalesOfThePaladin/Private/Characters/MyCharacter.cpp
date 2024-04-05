@@ -151,6 +151,7 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 		if (DotProductForward > 0.9f) // If moving forward
 		{
 			MoveState = EMoveState::EMS_SprintState;
+			GetCharacterMovement()->MaxAcceleration = 400.0f; // Slower accelaration for blending to sprint anim
 			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 		}
 		else
@@ -165,6 +166,7 @@ void AMyCharacter::DropSprint()
 	if (MoveState == EMoveState::EMS_SprintState)
 	{
 		MoveState = EMoveState::EMS_NONE;
+		GetCharacterMovement()->MaxAcceleration = 2048.0f;
 		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 	}
 }
