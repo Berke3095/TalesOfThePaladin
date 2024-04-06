@@ -294,6 +294,15 @@ void AMyCharacter::DropHeavyAttack()
 	}
 }
 
+void AMyCharacter::SpecialMove(const FInputActionValue& InputValue)
+{
+	const bool Special = InputValue.Get<bool>();
+	if (Special)
+	{
+
+	}
+}
+
 void AMyCharacter::SpellSwitchDeactive() // Release ctrl
 {
 	if (SpellSwitchWidget && SpellSwitchWidget->IsInViewport())
@@ -599,6 +608,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropHeavyAttack);
+		EnhancedInputComponent->BindAction(SpecialAction, ETriggerEvent::Triggered, this, &AMyCharacter::SpecialMove);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Started, this, &AMyCharacter::SpellSwitchActive);
 		EnhancedInputComponent->BindAction(SpellSwitchAction, ETriggerEvent::Completed, this, &AMyCharacter::SpellSwitchDeactive);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMyCharacter::Sprint); 

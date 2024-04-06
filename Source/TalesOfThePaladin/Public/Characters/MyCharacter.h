@@ -45,6 +45,7 @@ protected:
 	void DropAttack();
 	void HeavyAttack(const FInputActionValue& InputValue);
 	void DropHeavyAttack();
+	void SpecialMove(const FInputActionValue& InputValue);
 	void SpellSwitchDeactive();
 	void SpellSwitchActive(const FInputActionValue& InputValue);
 
@@ -151,6 +152,10 @@ private:
 	// Heavy attack
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* HeavyAttackAction{};
+
+	// Special move
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* SpecialAction{};
 
 	/*
 		WIDGETS
