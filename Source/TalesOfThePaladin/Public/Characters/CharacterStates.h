@@ -4,6 +4,7 @@ UENUM(BlueprintType)
 enum class EAttackState : uint8
 {
 	EATS_HeavyAttacking UMETA(DisplayName = "HeavyAttacking"),
+	EATS_BasicAttacking UMETA(DisplayName = "BasicAttacking"),
 	EATS_ProjectileAttacking UMETA(DisplayName = "ProjectileAttacking"),
 	EATS_NONE UMETA(DisplayName = "NONE")
 };

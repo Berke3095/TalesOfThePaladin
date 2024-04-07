@@ -201,6 +201,27 @@ void AMyCharacter::DropAim()
 	}
 }
 
+void AMyCharacter::AttackStart(const FInputActionValue& InputValue)
+{
+	const bool AttackStart = InputValue.Get<bool>();
+	if (AttackStart)
+	{
+		if (MoveState == EMoveState::EMS_NONE)
+		{
+			if (MyCharacterAnimInstance)
+			{
+				if (BasicAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(BasicAttackMontage))
+				{
+					MyCharacterAnimInstance->Montage_Play(BasicAttackMontage);
+					BasicAttackIndex++;
+					AttackState = EAttackState::EATS_BasicAttacking; 
+				}
+				else { BasicAttackIndex++; }
+			}
+		}
+	}
+}
+
 void AMyCharacter::Attack(const FInputActionValue& InputValue)
 {
 	const bool Attack = InputValue.Get<bool>();
@@ -555,23 +576,42 @@ void AMyCharacter::UseControllerYaw(float DeltaTime)
 
 void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
-	if (MyCharacterAnimInstance && HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // If the anim is coming to an end and you want to discontinue
+	if (MyCharacterAnimInstance)
 	{
-		if (NotifyName == FName("Reset") && !bIsCharging)
+		if (HeavyAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // If the anim is coming to an end and you want to discontinue
 		{
-			AttackState = EAttackState::EATS_NONE;
-			HeavyAttackState = EHeavyAttackState::EHAS_NONE;
-			HeavyAttackIndex = 0;
-			MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
+			if (NotifyName == FName("Reset") && !bIsCharging)
+			{
+				AttackState = EAttackState::EATS_NONE;
+				HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+				HeavyAttackIndex = 0;
+				MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
+			}
+			if (NotifyName == FName("AttackState0"))
+			{
+				AttackState = EAttackState::EATS_NONE;
+				HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+			}
+			if (NotifyName == FName("bHeavyLocked0")) // Open the lock and ready to trigger the following attack
+			{
+				bHeavyLocked = false;
+			}
 		}
-		if (NotifyName == FName("AttackState0"))
+		else if (BasicAttackMontage && MyCharacterAnimInstance->Montage_IsPlaying(BasicAttackMontage))
 		{
-			AttackState = EAttackState::EATS_NONE;
-			HeavyAttackState = EHeavyAttackState::EHAS_NONE; 
-		}
-		if (NotifyName == FName("bHeavyLocked0")) // Open the lock and ready to trigger the following attack
-		{
-			bHeavyLocked = false;
+			if (NotifyName == FName("Reset"))
+			{
+				BasicAttackIndex--;
+				if (BasicAttackIndex < 1)
+				{
+					MyCharacterAnimInstance->Montage_Stop(0.4f, BasicAttackMontage);
+					AttackState = EAttackState::EATS_NONE;
+				}
+			}
+			if (NotifyName == FName("AttackState0"))
+			{
+				AttackState = EAttackState::EATS_NONE;
+			}
 		}
 	}
 }
@@ -604,6 +644,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMyCharacter::AttackStart);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::Attack);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAttack);
 		EnhancedInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMyCharacter::HeavyAttack);

@@ -41,6 +41,7 @@ protected:
 	void Look(const FInputActionValue& InputValue);
 	void Aim(const FInputActionValue& InputValue);
 	void DropAim();
+	void AttackStart(const FInputActionValue& InputValue); // Used for one click increments
 	void Attack(const FInputActionValue& InputValue);
 	void DropAttack();
 	void HeavyAttack(const FInputActionValue& InputValue);
@@ -54,6 +55,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* HeavyAttackMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* BasicAttackMontage{};
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* TurnInPlaceMontage{};
@@ -218,6 +222,9 @@ private:
 	bool bIsCharging{}; // If not charging again after release, stop heavy attack sequence
 	int32 HeavyAttackIndex{};
 	FName HeavyAttackSectionArray[9];
+
+	// Basic attack
+	int32 BasicAttackIndex{};
 
 	/*
 		CAMERA
