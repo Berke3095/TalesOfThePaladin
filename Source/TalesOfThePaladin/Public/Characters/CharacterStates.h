@@ -22,6 +22,7 @@ UENUM(BlueprintType)
 enum class EMoveState : uint8
 {
 	EMS_AimState UMETA(DisplayName = "AimState"),
+	EMS_AttackState UMETA(DisplayName = "AttackState"),
 	EMS_SprintState UMETA(DisplayName = "SprintState"),
 	EMS_NONE UMETA(DisplayName = "NONE")
 };

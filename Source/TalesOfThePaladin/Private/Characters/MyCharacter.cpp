@@ -111,6 +111,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("BasicAttackIndex: %d"), BasicAttackIndex);
 }
 
 /*
@@ -140,22 +142,25 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 {
 	const bool Sprint = InputValue.Get<bool>();
-	if (Sprint && MoveState != EMoveState::EMS_AimState)
+	if (Sprint)
 	{
-		// Get Dot to calculate forwardish movement
-		FVector ForwardVector = GetActorForwardVector();
-		FVector VelocityDirection = GetVelocity().GetSafeNormal();
-		float DotProductForward = FVector::DotProduct(ForwardVector, VelocityDirection);
+		if (MoveState == EMoveState::EMS_NONE || MoveState == EMoveState::EMS_SprintState)
+		{
+			// Get Dot to calculate forwardish movement
+			FVector ForwardVector = GetActorForwardVector();
+			FVector VelocityDirection = GetVelocity().GetSafeNormal();
+			float DotProductForward = FVector::DotProduct(ForwardVector, VelocityDirection);
 
-		if (DotProductForward > 0.9f) // If moving forward
-		{
-			MoveState = EMoveState::EMS_SprintState;
-			ShakeOuterRadius = 200.0f;
-			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-		}
-		else
-		{
-			DropSprint();
+			if (DotProductForward > 0.9f) // If moving forward
+			{
+				MoveState = EMoveState::EMS_SprintState;
+				ShakeOuterRadius = 200.0f;
+				GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+			}
+			else
+			{
+				DropSprint();
+			}
 		}
 	}
 }
@@ -183,11 +188,14 @@ void AMyCharacter::Look(const FInputActionValue& InputValue)
 void AMyCharacter::Aim(const FInputActionValue& InputValue)
 {
 	const bool Aim = InputValue.Get<bool>();
-	if (Aim && MoveState != EMoveState::EMS_SprintState)
+	if (Aim)
 	{
-		MoveState = EMoveState::EMS_AimState;
-		GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
-		Weapon->WeaponMesh->SetVisibility(false);
+		if (MoveState == EMoveState::EMS_NONE)
+		{
+			MoveState = EMoveState::EMS_AimState;
+			GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
+			Weapon->WeaponMesh->SetVisibility(false);
+		}
 	}
 }
 
@@ -206,18 +214,21 @@ void AMyCharacter::AttackStart(const FInputActionValue& InputValue)
 	const bool AttackStart = InputValue.Get<bool>();
 	if (AttackStart)
 	{
-		if (MoveState == EMoveState::EMS_NONE)
+		if ((MoveState == EMoveState::EMS_NONE || MoveState == EMoveState::EMS_AttackState) 
+			&& (AttackState == EAttackState::EATS_NONE || AttackState == EAttackState::EATS_BasicAttacking)
+			&& MyCharacterAnimInstance)
 		{
-			if (MyCharacterAnimInstance)
+			if (BasicAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(BasicAttackMontage))
 			{
-				if (BasicAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(BasicAttackMontage))
+				if (AttackState == EAttackState::EATS_NONE || AttackState == EAttackState::EATS_BasicAttacking)
 				{
 					MyCharacterAnimInstance->Montage_Play(BasicAttackMontage);
 					BasicAttackIndex++;
-					AttackState = EAttackState::EATS_BasicAttacking; 
+					AttackState = EAttackState::EATS_BasicAttacking;
+					MoveState = EMoveState::EMS_AttackState;
 				}
-				else { BasicAttackIndex++; }
 			}
+			else { BasicAttackIndex++; }
 		}
 	}
 }
@@ -227,51 +238,59 @@ void AMyCharacter::Attack(const FInputActionValue& InputValue)
 	const bool Attack = InputValue.Get<bool>();
 	if (Attack)
 	{
-		if (MoveState == EMoveState::EMS_AimState)
+		if (MoveState == EMoveState::EMS_AimState 
+			&& MyCharacterAnimInstance 
+			&& SpellCastMontage && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage))
 		{
-			if (MyCharacterAnimInstance && SpellCastMontage && !MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
-			{
-				AttackState = EAttackState::EATS_ProjectileAttacking;
-				PlayAnimMontage(SpellCastMontage);
-			}
+			AttackState = EAttackState::EATS_ProjectileAttacking;
+			PlayAnimMontage(SpellCastMontage);
 		}
 	}
 }
 
 void AMyCharacter::DropAttack()
 {
-	if (MyCharacterAnimInstance && SpellCastMontage && MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
+	if (MoveState == EMoveState::EMS_AimState)
 	{
-		AttackState = EAttackState::EATS_NONE;
-		MyCharacterAnimInstance->Montage_Stop(0.5f, SpellCastMontage);
+		if (MyCharacterAnimInstance && SpellCastMontage && MyCharacterAnimInstance->Montage_IsPlaying(SpellCastMontage)) //Check if it is not already playing  
+		{
+			AttackState = EAttackState::EATS_NONE;
+			MyCharacterAnimInstance->Montage_Stop(0.5f, SpellCastMontage);
+		}
 	}
 }
 
 void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 {
 	const bool HeavyAttack = InputValue.Get<bool>();
-	if (HeavyAttack && !bHeavyLocked && MoveState != EMoveState::EMS_AimState)
+	if (HeavyAttack)
 	{
-		AttackState = EAttackState::EATS_HeavyAttacking; 
-		bIsCharging = true;
-		
-		if (MyCharacterAnimInstance && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
+		if ((AttackState == EAttackState::EATS_NONE || AttackState == EAttackState::EATS_HeavyAttacking) 
+			&& (MoveState == EMoveState::EMS_NONE || MoveState == EMoveState::EMS_AttackState)
+			&& !bHeavyLocked)
 		{
-			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
+			AttackState = EAttackState::EATS_HeavyAttacking;
+			MoveState = EMoveState::EMS_AttackState;
+			bIsCharging = true;
 
-			if (HeavyAttackIndex == 0 || HeavyAttackIndex == 3 || HeavyAttackIndex == 6) // If charging to reach loop anim, increment again
+			if (MyCharacterAnimInstance && HeavyAttackMontage && !MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage)) // Play if not already playing
 			{
-				if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+				MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
+				MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
+
+				if (HeavyAttackIndex == 0 || HeavyAttackIndex == 3 || HeavyAttackIndex == 6) // If charging to reach loop anim, increment again
 				{
-					HeavyAttackState = EHeavyAttackState::EHAS_ChargingHeavy;
-					HeavyAttackIndex++;
+					if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+					{
+						HeavyAttackState = EHeavyAttackState::EHAS_ChargingHeavy;
+						HeavyAttackIndex++;
+					}
 				}
-			}
-			else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
-			{
-				HeavyAttackState = EHeavyAttackState::EHAS_ChargeLooping;
-				MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackMontage);
+				else if (HeavyAttackIndex == 1 || HeavyAttackIndex == 4 || HeavyAttackIndex == 7) // Loop in charge anims
+				{
+					HeavyAttackState = EHeavyAttackState::EHAS_ChargeLooping;
+					MyCharacterAnimInstance->Montage_SetNextSection(HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackSectionArray[HeavyAttackIndex], HeavyAttackMontage);
+				}
 			}
 		}
 	}
@@ -279,36 +298,40 @@ void AMyCharacter::HeavyAttack(const FInputActionValue& InputValue)
 
 void AMyCharacter::DropHeavyAttack()
 {
-	if (bHeavyLocked) { return; }
-
-	bIsCharging = false;
-	bHeavyLocked = true;
-	if (MyCharacterAnimInstance && HeavyAttackMontage)
+	if (AttackState == EAttackState::EATS_HeavyAttacking)
 	{
-		if (HeavyAttackState != EHeavyAttackState::EHAS_ChargeLooping) // If charge is cut half, reset 
+		if (bHeavyLocked) { return; }
+
+		bIsCharging = false;
+		bHeavyLocked = true;
+		if (MyCharacterAnimInstance && HeavyAttackMontage)
 		{
-			if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
+			if (HeavyAttackState != EHeavyAttackState::EHAS_ChargeLooping) // If charge is cut half, reset 
 			{
-				MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
-			}
-			HeavyAttackIndex = 0;
-			AttackState = EAttackState::EATS_NONE;
-			HeavyAttackState = EHeavyAttackState::EHAS_NONE;
-			bHeavyLocked = false;
-		}
-		else if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && HeavyAttackState == EHeavyAttackState::EHAS_ChargeLooping)
-		{
-			HeavyAttackState = EHeavyAttackState::EHAS_HeavyAttacking;
-			HeavyAttackIndex++; // Increment to play the current attack anim
-			MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
-			MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
-			if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Increment to charge anim
-			{
-				HeavyAttackIndex++;
-				if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
+				if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage))
 				{
-					HeavyAttackIndex = 0;
-					// AttackState set to none in anim notify begin
+					MyCharacterAnimInstance->Montage_Stop(0.4f, HeavyAttackMontage);
+				}
+				HeavyAttackIndex = 0;
+				AttackState = EAttackState::EATS_NONE;
+				HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+				MoveState = EMoveState::EMS_NONE;
+				bHeavyLocked = false;
+			}
+			else if (MyCharacterAnimInstance->Montage_IsPlaying(HeavyAttackMontage) && HeavyAttackState == EHeavyAttackState::EHAS_ChargeLooping)
+			{
+				HeavyAttackState = EHeavyAttackState::EHAS_HeavyAttacking;
+				HeavyAttackIndex++; // Increment to play the current attack anim
+				MyCharacterAnimInstance->Montage_Play(HeavyAttackMontage);
+				MyCharacterAnimInstance->Montage_JumpToSection(HeavyAttackSectionArray[HeavyAttackIndex]);
+				if (HeavyAttackIndex < UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Increment to charge anim
+				{
+					HeavyAttackIndex++;
+					if (HeavyAttackIndex == UE_ARRAY_COUNT(HeavyAttackSectionArray)) // Reset if end of sequence
+					{
+						HeavyAttackIndex = 0;
+						// AttackState set to none in anim notify begin
+					}
 				}
 			}
 		}
@@ -584,6 +607,7 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 			{
 				AttackState = EAttackState::EATS_NONE;
 				HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+				MoveState = EMoveState::EMS_NONE;
 				HeavyAttackIndex = 0;
 				MyCharacterAnimInstance->Montage_Stop(0.8f, HeavyAttackMontage);
 			}
@@ -591,6 +615,7 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 			{
 				AttackState = EAttackState::EATS_NONE;
 				HeavyAttackState = EHeavyAttackState::EHAS_NONE;
+				MoveState = EMoveState::EMS_NONE;
 			}
 			if (NotifyName == FName("bHeavyLocked0")) // Open the lock and ready to trigger the following attack
 			{
@@ -606,11 +631,15 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 				{
 					MyCharacterAnimInstance->Montage_Stop(0.4f, BasicAttackMontage);
 					AttackState = EAttackState::EATS_NONE;
+					MoveState = EMoveState::EMS_NONE;
+					BasicAttackIndex = 0;
 				}
 			}
 			if (NotifyName == FName("AttackState0"))
 			{
 				AttackState = EAttackState::EATS_NONE;
+				MoveState = EMoveState::EMS_NONE;
+				BasicAttackIndex = 0; 
 			}
 		}
 	}
