@@ -122,6 +122,7 @@ private:
 		COMPONENTS
 	*/
 	class UCapsuleComponent* CapsuleComponent{}; 
+	class USkeletalMeshComponent* MeshComponent{};
 
 	/*
 		INPUT
@@ -242,6 +243,6 @@ public:
 	const ETurnState GetTurnState() const { return TurnState; }
 
 	// For fabric
-	const AWeapon* GetWeapon(); 
-	class USkeletalMeshComponent* MeshComponent{};
+	const AWeapon* GetWeapon();
+	const USkeletalMeshComponent* GetMeshComponent();
 };

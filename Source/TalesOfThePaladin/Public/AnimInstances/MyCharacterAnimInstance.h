@@ -8,10 +8,6 @@
 
 #include "MyCharacterAnimInstance.generated.h"
 
-// Character related classes
-class AMyCharacter;
-class UCharacterMovementComponent;
-
 UCLASS()
 class TALESOFTHEPALADIN_API UMyCharacterAnimInstance : public UAnimInstance
 {
@@ -27,11 +23,11 @@ protected:
 
 	// Creating character reference
 	UPROPERTY(BlueprintReadOnly)
-	AMyCharacter* MyCharacter{};
+	class AMyCharacter* MyCharacter{};
 
 	// Creating character movement reference
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	UCharacterMovementComponent* MyCharacterMovement{};
+	class UCharacterMovementComponent* MyCharacterMovement{};
 
 	// Character speed
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")

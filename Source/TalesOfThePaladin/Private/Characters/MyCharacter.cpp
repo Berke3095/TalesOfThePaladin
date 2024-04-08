@@ -645,17 +645,16 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 	}
 }
 
-const AWeapon* AMyCharacter::GetWeapon()
-{
-	if (Weapon)
-	{
-		return Weapon;
-	}
-	else
-	{
-		return nullptr;
-	} 
+const AWeapon* AMyCharacter::GetWeapon() {
+	if (Weapon) { return Weapon; }
+	else { return nullptr; }
 }
+
+const USkeletalMeshComponent* AMyCharacter::GetMeshComponent() {
+	if (MeshComponent) { return MeshComponent; }
+	else { return nullptr; }
+}
+
 
 // Bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
