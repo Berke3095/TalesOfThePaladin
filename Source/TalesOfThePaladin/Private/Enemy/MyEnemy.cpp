@@ -6,6 +6,9 @@
 // Components
 #include "Components/CapsuleComponent.h"
 
+// Kismet
+#include "Kismet/GameplayStatics.h"
+
 #include "AIController.h" 
 
 AMyEnemy::AMyEnemy()
@@ -21,12 +24,13 @@ AMyEnemy::AMyEnemy()
 	MeshComponent = GetMesh();
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap);
 }
 
 void AMyEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
 // Called every frame
