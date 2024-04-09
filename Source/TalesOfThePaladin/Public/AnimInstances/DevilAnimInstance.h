@@ -6,9 +6,6 @@
 #include "Animation/AnimInstance.h"
 #include "DevilAnimInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class TALESOFTHEPALADIN_API UDevilAnimInstance : public UAnimInstance
 {

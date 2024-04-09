@@ -1,4 +1,6 @@
 #include "Weapons/Weapon.h"
+
+// Components
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 
@@ -18,25 +20,6 @@ AWeapon::AWeapon()
 	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap); 
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxComponentOverlap); 
-
-}
-
-void AWeapon::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-void AWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void AWeapon::OnBoxComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Weapon overlapped"));
 }
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)

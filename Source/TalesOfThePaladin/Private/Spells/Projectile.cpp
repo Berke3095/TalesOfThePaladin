@@ -1,52 +1,38 @@
 #include "Spells/Projectile.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Components
-#include "Components/BoxComponent.h" 
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/AudioComponent.h" // Store the sound to destroy afterwards
+#include "Components/BoxComponent.h"
 
 // Projectile effects
 #include "Particles/ParticleSystem.h" 
 #include "Sound/SoundCue.h"
-#include "Kismet/GameplayStatics.h"
 
 // References
 #include "Characters/MyCharacter.h"
 #include "Combat/Combat.h"
 
-
 AProjectile::AProjectile()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
-	SetRootComponent(BoxComponent);
-
-	// Collision Settings - Make sure custom object type is "Projectile"
-	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel4);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap); // Overlap enemy
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapBegin); // Overlap dynamic 
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->InitialSpeed = 1000.0f;
 	ProjectileMovementComponent->MaxSpeed = 1000.0f;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapBegin); // Overlap dynamic 
 }
 
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)); // MyCharacter ref
-	if (MyCharacter)
+	if (CombatComponent)
 	{
-		CombatComponent = MyCharacter->FindComponentByClass<UCombat>(); // Combat ref
-		if (CombatComponent)
-		{
-			ProjectileMovementComponent->Velocity = CombatComponent->ProjectileDirection * ProjectileMovementComponent->MaxSpeed;
-		}
+		ProjectileMovementComponent->Velocity = CombatComponent->ProjectileDirection * ProjectileMovementComponent->MaxSpeed;
 	}
 
 	if (ProjectileSound)
@@ -82,6 +68,8 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		ProjectileAudioComponent->DestroyComponent();
 	}
 	Destroy();
+
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
 }
 
 void AProjectile::DestroyWhenFar()

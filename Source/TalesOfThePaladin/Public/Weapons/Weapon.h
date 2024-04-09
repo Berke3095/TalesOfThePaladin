@@ -13,16 +13,6 @@ public:
 
 	AWeapon();
 
-private:
-
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-
-private:
-
-	UFUNCTION() // Hammer tip overlap for hit damage
-	void OnBoxComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite) 

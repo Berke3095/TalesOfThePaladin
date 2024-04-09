@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Spells/Spell.h"
 #include "Projectile.generated.h"
 
 class USoundCue; // Multiple sounds
 
 UCLASS()
-class TALESOFTHEPALADIN_API AProjectile : public AActor
+class TALESOFTHEPALADIN_API AProjectile : public ASpell
 {
 	GENERATED_BODY()
 	
@@ -21,33 +21,8 @@ private:
 
 private:
 
-	/*
-		REFERENCES
-	*/
-	class AMyCharacter* MyCharacter{};
-
-	/*
-		COMPONENTS
-	*/
-	UPROPERTY(EditDefaultsOnly) // Box collision as root
-	class UBoxComponent* BoxComponent{};
 	UPROPERTY(EditDefaultsOnly) // Projectile move
 	class UProjectileMovementComponent* ProjectileMovementComponent{};
-	// Combat class variable
-	class UCombat* CombatComponent{};
-
-	/*
-		ON HIT EFFECTS
-	*/
-	UPROPERTY(EditDefaultsOnly) // Projectile explosion
-	class UParticleSystem* ProjectileExplosionParticle{};
-	UPROPERTY(EditDefaultsOnly) // Projectile explosion sound
-	USoundCue* ProjectileExplosionSound{};
-	class UAudioComponent* ProjectileAudioComponent{};
-
-	UPROPERTY(EditDefaultsOnly) // Projectile sound
-	USoundCue* ProjectileSound;
-	bool bHasPlayedSound{};
 
 	/*
 		FUNCTIONS
@@ -55,7 +30,22 @@ private:
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
 		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-		const FHitResult& SweepResult);
+		const FHitResult& Hit);
+
+	/*
+		ON OVERLAP EFFECTS
+	*/
+	UPROPERTY(EditDefaultsOnly) // Projectile explosion
+	class UParticleSystem* ProjectileExplosionParticle{};
+
+	UPROPERTY(EditDefaultsOnly) // Projectile explosion sound
+	USoundCue* ProjectileExplosionSound{};
+
+	class UAudioComponent* ProjectileAudioComponent{};
+
+	UPROPERTY(EditDefaultsOnly) // Projectile sound
+	USoundCue* ProjectileSound;
+	bool bHasPlayedSound{};
 
 	void DestroyWhenFar();
 	const float DistanceToDestroy{ 7000.f };

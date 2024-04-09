@@ -64,5 +64,5 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	EAttackState AttackState{};
 
-	const class AWeapon* Weapon{};
+	const class APlayerWeapon* PlayerWeapon{};
 };

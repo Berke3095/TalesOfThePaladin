@@ -25,7 +25,7 @@
 #include "Components/Image.h"
 
 // Weapon
-#include "Weapons/Weapon.h"
+#include "Weapons/PlayerWeapon.h"
 
 // Attributes
 #include "GameFramework/CharacterMovementComponent.h"
@@ -81,12 +81,12 @@ void AMyCharacter::BeginPlay()
 
 	const USkeletalMeshSocket* WeaponSocket = GetMesh()->GetSocketByName(FName("WeaponSocket")); //Getting socket by name   
 	FTransform WeaponSocketTransform = WeaponSocket->GetSocketTransform(GetMesh());
-	if (WeaponClass)
+	if (PlayerWeaponClass)
 	{
-		Weapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, WeaponSocketTransform);
-		if (Weapon)
+		PlayerWeapon = GetWorld()->SpawnActor<APlayerWeapon>(PlayerWeaponClass, WeaponSocketTransform);
+		if (PlayerWeapon)
 		{
-			Weapon->Equip(GetMesh(), FName("WeaponSocket"));
+			PlayerWeapon->Equip(GetMesh(), FName("WeaponSocket"));
 		}
 	}
 
@@ -112,8 +112,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("BasicAttackIndex: %d"), BasicAttackIndex);
 }
 
 /*
@@ -195,7 +193,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 		{
 			MoveState = EMoveState::EMS_AimState;
 			GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
-			Weapon->WeaponMesh->SetVisibility(false);
+			PlayerWeapon->WeaponMesh->SetVisibility(false);
 		}
 	}
 }
@@ -206,7 +204,7 @@ void AMyCharacter::DropAim()
 	{
 		MoveState = EMoveState::EMS_NONE;
 		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-		Weapon->WeaponMesh->SetVisibility(true);
+		PlayerWeapon->WeaponMesh->SetVisibility(true);
 	}
 }
 
@@ -499,12 +497,12 @@ void AMyCharacter::SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocke
 	if (SpawnSocket)
 	{
 		FTransform ProjectileSocketTransform = SpawnSocket->GetSocketTransform(GetMesh()); // Getting the transform of socket 
-		if (ProjectileClass[ChosenSkill])
+		if (SpellClass[ChosenSkill])
 		{
 			UWorld* World = GetWorld();
 			if (World)
 			{
-				World->SpawnActor<AProjectile>(ProjectileClass[ChosenSkill], ProjectileSocketTransform);
+				World->SpawnActor<AProjectile>(SpellClass[ChosenSkill], ProjectileSocketTransform);
 			}
 		}
 	}
@@ -646,8 +644,8 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 	}
 }
 
-const AWeapon* AMyCharacter::GetWeapon() {
-	if (Weapon) { return Weapon; }
+const APlayerWeapon* AMyCharacter::GetPlayerWeapon() {
+	if (PlayerWeapon) { return PlayerWeapon; }
 	else { return nullptr; }
 }
 

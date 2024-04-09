@@ -14,7 +14,7 @@ class USpellSwitchWidget; // Used for widgets
 class UImage; // For images
 class USkeletalMeshSocket; // Getting skeletal mesh socket
 class USoundCue; // Sounds
-class AWeapon; // Class
+class APlayerWeapon; // Class
 class UAnimMontage; // Anim montages
 
 UCLASS()
@@ -75,7 +75,7 @@ protected:
 		COMBAT
 	*/
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AProjectile> ProjectileClass[2];
+	TSubclassOf<class ASpell> SpellClass[2];
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
@@ -209,9 +209,9 @@ private:
 	/*
 		COMBAT
 	*/
-	AWeapon* Weapon{};
+	APlayerWeapon* PlayerWeapon{};
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AWeapon> WeaponClass{};
+	TSubclassOf<APlayerWeapon> PlayerWeaponClass{};
 
 	// Spell pick
 	EActiveSpellPick ActiveSpellPick = EActiveSpellPick::EASP_NONE;
@@ -243,6 +243,6 @@ public:
 	const ETurnState GetTurnState() const { return TurnState; }
 
 	// For fabric
-	const AWeapon* GetWeapon();
+	const APlayerWeapon* GetPlayerWeapon();
 	const USkeletalMeshComponent* GetMeshComponent();
 };
