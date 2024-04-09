@@ -24,8 +24,10 @@ AProjectile::AProjectile()
 
 	// Collision Settings - Make sure custom object type is "Projectile"
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-	BoxComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit); // Hit dynamic 
+	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel4);
+	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);
+	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap); // Overlap enemy
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapBegin); // Overlap dynamic 
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovementComponent->InitialSpeed = 1000.0f;
@@ -63,8 +65,7 @@ void AProjectile::Tick(float DeltaTime)
 	}
 }
 
-// Hit actions
-void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
 	if (ProjectileExplosionParticle)
 	{

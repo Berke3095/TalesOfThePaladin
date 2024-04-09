@@ -14,10 +14,9 @@ AWeapon::AWeapon()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
-	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly); 
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Make it on, in anim notify later on
+	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Overlap); 
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap); 
 	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap); 
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnBoxComponentOverlap); 
 

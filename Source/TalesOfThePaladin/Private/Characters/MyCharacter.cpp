@@ -42,14 +42,17 @@ AMyCharacter::AMyCharacter() // Defaults
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
-	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore); 
-	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);  
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	// Collision settings - Make sure custom object type is "MainCharacter"
 	MeshComponent = GetMesh();
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	// Camera settings
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));

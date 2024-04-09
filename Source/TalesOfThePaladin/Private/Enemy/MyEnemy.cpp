@@ -17,13 +17,16 @@ AMyEnemy::AMyEnemy()
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 	// Collision settings - Make sure custom object type is "Enemy"
 	MeshComponent = GetMesh();
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
+	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AMyEnemy::BeginPlay()
