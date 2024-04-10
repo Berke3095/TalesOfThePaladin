@@ -29,7 +29,7 @@ AMyEnemy::AMyEnemy()
 	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap); // Player Weapon
-	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Overlap); // Player Spell
+	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Block); // Player Spell
 }
 
 void AMyEnemy::BeginPlay()

@@ -28,12 +28,10 @@ private:
 		FUNCTIONS
 	*/
 	UFUNCTION()
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
-		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-		const FHitResult& Hit);
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	/*
-		ON OVERLAP EFFECTS
+		ON HIT EFFECTS
 	*/
 	UPROPERTY(EditDefaultsOnly) // Projectile explosion
 	class UParticleSystem* ProjectileExplosionParticle{};

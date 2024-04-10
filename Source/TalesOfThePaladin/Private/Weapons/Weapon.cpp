@@ -17,7 +17,7 @@ AWeapon::AWeapon()
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Make it on, in anim notify later on
-	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
+	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3); // Weapon type
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap); 
 }

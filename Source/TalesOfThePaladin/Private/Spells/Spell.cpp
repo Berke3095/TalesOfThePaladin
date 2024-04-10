@@ -19,9 +19,7 @@ ASpell::ASpell()
 	// Collision Settings - Make sure custom object type is "Spell"
 	BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel4); // Object type "spell"
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);
-	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap); // Overlap enemy 
-	BoxComponent->SetGenerateOverlapEvents(true);
+	BoxComponent->SetGenerateOverlapEvents(false);
 }
 
 void ASpell::BeginPlay()

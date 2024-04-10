@@ -50,6 +50,7 @@ AMyCharacter::AMyCharacter() // Defaults
 
 	// Collision settings - Make sure custom object type is "MainCharacter"
 	MeshComponent = GetMesh();
+	MeshComponent->SetGenerateOverlapEvents(true);
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);

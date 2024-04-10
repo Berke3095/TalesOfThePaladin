@@ -23,7 +23,13 @@ AProjectile::AProjectile()
 	ProjectileMovementComponent->InitialSpeed = 1000.0f;
 	ProjectileMovementComponent->MaxSpeed = 1000.0f;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnOverlapBegin); // Overlap dynamic 
+
+	if (BoxComponent)
+	{
+		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block); // Block enemy 
+		BoxComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+	}
 }
 
 void AProjectile::BeginPlay()
@@ -51,7 +57,7 @@ void AProjectile::Tick(float DeltaTime)
 	}
 }
 
-void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (ProjectileExplosionParticle)
 	{
@@ -68,8 +74,6 @@ void AProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		ProjectileAudioComponent->DestroyComponent();
 	}
 	Destroy();
-
-	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
 }
 
 void AProjectile::DestroyWhenFar()
