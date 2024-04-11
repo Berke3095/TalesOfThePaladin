@@ -38,6 +38,6 @@ void ADevil::Tick(float DeltaTime)
 	AimOffset(DeltaTime, DevilYaw, DevilPitch);
 	ChasePlayer();
 
-	UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
-	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);
+	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
+	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/
 }
