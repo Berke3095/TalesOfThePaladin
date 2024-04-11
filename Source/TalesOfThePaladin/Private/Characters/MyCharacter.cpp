@@ -528,13 +528,7 @@ void AMyCharacter::AimOffset(float DeltaTime) //Setting up the offset
 	FVector Velocity = GetVelocity();
 	float Speed = Velocity.Size();
 
-	if (Speed > 0.f)
-	{
-		//Get the yaw of camera as soon as character walks
-		StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
-		CharacterYaw = FMath::FInterpTo(CharacterYaw, 0.f, DeltaTime, 5.f);
-	}
-	else if (Speed == 0.f)
+	if (Speed == 0.f)
 	{
 		// Calculating character yaw for offset
 		FRotator CurrentRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
@@ -543,7 +537,12 @@ void AMyCharacter::AimOffset(float DeltaTime) //Setting up the offset
 
 		TurnInPlace(DeltaTime);
 	}
-	
+	else if (Speed > 0.f)
+	{
+		//Get the yaw of camera as soon as character walks
+		StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+		CharacterYaw = FMath::FInterpTo(CharacterYaw, 0.f, DeltaTime, 5.f);
+	}
 	CharacterPitch = GetBaseAimRotation().Pitch;
 }
 

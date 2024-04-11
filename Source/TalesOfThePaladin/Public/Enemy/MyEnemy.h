@@ -26,6 +26,11 @@ protected:
 	*/
 	void AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch);
 
+	/*
+		MOVEMENT
+	*/
+	void ChasePlayer(); // Go after player
+
 private:
 
 	/*
@@ -37,8 +42,6 @@ private:
 	class AMyCharacter* MyCharacter; // Player ref
 
 	class AAIController* EnemyController{};
-
-	void ChasePlayer(); // Go after player
 
 	/*
 		OFFSET

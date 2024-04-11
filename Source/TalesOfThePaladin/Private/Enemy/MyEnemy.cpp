@@ -10,11 +10,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h" // Math
 
+// Movement
 #include "AIController.h" 
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMyEnemy::AMyEnemy()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
@@ -31,6 +33,9 @@ AMyEnemy::AMyEnemy()
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap); // Player Weapon
 	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Block); // Player Spell
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Smoother, rotates into the direction it walks to
 }
 
 void AMyEnemy::BeginPlay()
@@ -46,8 +51,6 @@ void AMyEnemy::BeginPlay()
 void AMyEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	ChasePlayer();
 }
 
 void AMyEnemy::AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch)
@@ -61,20 +64,20 @@ void AMyEnemy::AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch)
 		FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head"); 
 		FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head"); 
 
-		if (Speed > 0.f)
+		// The direction towards the player
+		FVector DirectionToPlayer = (CharacterHeadLocation - EnemyHeadLocation).GetSafeNormal();
+		FRotator AimRotation = DirectionToPlayer.Rotation();
+		DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingRotation); // AimRotation - StartingRotation
+
+		if (Speed == 0.f)
+		{
+			EnemyYaw = DeltaRotation.Yaw;
+		}
+		else if (Speed > 0.f)
 		{
 			//Get the yaw of camera as soon as character walks
 			StartingRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.f);
 			EnemyYaw = FMath::FInterpTo(EnemyYaw, 0.f, DeltaTime, 5.f);
-		}
-		else if (Speed == 0.f)
-		{
-			// The direction towards the player
-			FVector DirectionToPlayer = (CharacterHeadLocation - EnemyHeadLocation).GetSafeNormal(); 
-			FRotator AimRotation = DirectionToPlayer.Rotation();
-
-			DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingRotation); // AimRotation - StartingRotation
-			EnemyYaw = DeltaRotation.Yaw;
 		}
 		EnemyPitch = DeltaRotation.Pitch; 
 	}
