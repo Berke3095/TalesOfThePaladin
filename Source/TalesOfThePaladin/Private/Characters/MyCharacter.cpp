@@ -128,7 +128,11 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 
 	if (IsValid(GetController()))
 	{
-		TurnState = ETurnState::ETS_NONE;
+		if (MyCharacterAnimInstance && TurnInPlaceMontage && MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+		{
+			MyCharacterAnimInstance->Montage_Stop(0.3f, TurnInPlaceMontage);
+			TurnState = ETurnState::ETS_NONE;
+		}
 		// Get controller yaw rotation
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		const FRotator ControlYawRotation(0, ControlRotation.Yaw, 0);
@@ -552,14 +556,6 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 {
 	if (FMath::Abs(CharacterYaw) > TurnInPlaceLimit)
 	{
-		InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 5.0f);
-		CharacterYaw = InterptYaw;
-
-		if (FMath::Abs(CharacterYaw) < 5.f)
-		{
-			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
-		}
-
 		if (AttackState != EAttackState::EATS_NONE) { return; }
 		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
 		{
@@ -588,7 +584,6 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 	}
 	else
 	{
-		InterptYaw = CharacterYaw;
 		TurnState = ETurnState::ETS_NONE;
 	}
 }
