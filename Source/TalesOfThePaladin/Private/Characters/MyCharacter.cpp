@@ -556,34 +556,47 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 {
 	if (FMath::Abs(CharacterYaw) > TurnInPlaceLimit)
 	{
-		if (AttackState != EAttackState::EATS_NONE) { return; }
-		if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+		if (AttackState == EAttackState::EATS_NONE)
 		{
-			MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
-
-			int32 CaseInt{};
-			FName SectionName{};
-
-			if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; TurnState = ETurnState::ETS_TurnLeft; } // Turn left
-			else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; TurnState = ETurnState::ETS_TurnRight; } // Turn Right
-
-			switch (CaseInt)
+			if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
 			{
-			case 0:
-				SectionName = FName("0");
-				break;
-			case 1:
-				SectionName = FName("1");
-				break;
-			default:
-				break;
-			}
+				MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
 
-			MyCharacterAnimInstance->Montage_JumpToSection(SectionName, TurnInPlaceMontage);
+				int32 CaseInt{};
+				FName SectionName{};
+
+				if (CharacterYaw < -TurnInPlaceLimit + 5.0f) { CaseInt = 0; TurnState = ETurnState::ETS_TurnLeft; } // Turn left
+				else if (CharacterYaw > TurnInPlaceLimit - 5.0f) { CaseInt = 1; TurnState = ETurnState::ETS_TurnRight; } // Turn Right
+
+				switch (CaseInt)
+				{
+				case 0:
+					SectionName = FName("0");
+					break;
+				case 1:
+					SectionName = FName("1");
+					break;
+				default:
+					break;
+				}
+
+				MyCharacterAnimInstance->Montage_JumpToSection(SectionName, TurnInPlaceMontage);
+			}
+		}
+		else
+		{
+			InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 5.0f); // Dont turn in place during attack, montages conflict
+			CharacterYaw = InterptYaw;
+
+			if (FMath::Abs(CharacterYaw) < 5.f)
+			{
+				StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+			}
 		}
 	}
 	else
 	{
+		InterptYaw = CharacterYaw; 
 		TurnState = ETurnState::ETS_NONE;
 	}
 }
