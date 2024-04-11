@@ -128,7 +128,7 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 
 	if (IsValid(GetController()))
 	{
-		if (MyCharacterAnimInstance && TurnInPlaceMontage && MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+		if (MyCharacterAnimInstance && TurnInPlaceMontage && MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage)) // Stop turn if move
 		{
 			MyCharacterAnimInstance->Montage_Stop(0.3f, TurnInPlaceMontage);
 			TurnState = ETurnState::ETS_NONE;
