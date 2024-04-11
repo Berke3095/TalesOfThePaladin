@@ -38,6 +38,8 @@ void AMyEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
 }
 
 // Called every frame
@@ -45,37 +47,36 @@ void AMyEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ChasePlayer();
+	ChasePlayer();
 }
 
-void AMyEnemy::AimOffset(float DeltaTime, float EnemyYaw, float EnemyPitch)
+void AMyEnemy::AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch)
 {
-	if (MyCharacter)
+	if (MyCharacter && MyCharacter->GetMeshComponent())
 	{
+		FRotator DeltaRotation;
 		FVector Velocity = GetVelocity();
 		float Speed = Velocity.Size();
 
-		if (Speed == 0.f)
-		{
-			// The direction towards the player
-			FVector DirectionToPlayer = MyCharacter->GetActorLocation() - GetActorLocation().GetSafeNormal();
+		FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head"); 
+		FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head"); 
 
-			// Calculating character yaw for offset
-			FRotator AimRotation = DirectionToPlayer.Rotation();
-			FRotator LookRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
-			FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(LookRotation, StartingRotation); // CurrentRotation - StartingRotation
-			EnemyYaw = DeltaRotation.Yaw;
-
-			// TurnInPlace(DeltaTime);
-		}
 		if (Speed > 0.f)
 		{
 			//Get the yaw of camera as soon as character walks
-			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+			StartingRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.f);
 			EnemyYaw = FMath::FInterpTo(EnemyYaw, 0.f, DeltaTime, 5.f);
 		}
+		else if (Speed == 0.f)
+		{
+			// The direction towards the player
+			FVector DirectionToPlayer = (CharacterHeadLocation - EnemyHeadLocation).GetSafeNormal(); 
+			FRotator AimRotation = DirectionToPlayer.Rotation();
 
-		EnemyPitch = GetBaseAimRotation().Pitch;
+			DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingRotation); // AimRotation - StartingRotation
+			EnemyYaw = DeltaRotation.Yaw;
+		}
+		EnemyPitch = DeltaRotation.Pitch; 
 	}
 }
 

@@ -24,7 +24,7 @@ protected:
 	/*
 		OFFSET
 	*/
-	void AimOffset(float DeltaTime, float EnemyYaw, float EnemyPitch);
+	void AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch);
 
 private:
 
@@ -40,5 +40,8 @@ private:
 
 	void ChasePlayer(); // Go after player
 
-	FRotator StartingRotation{};
+	/*
+		OFFSET
+	*/
+	FRotator StartingRotation{}; 
 };
