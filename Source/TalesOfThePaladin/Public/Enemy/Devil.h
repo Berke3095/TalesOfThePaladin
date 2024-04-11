@@ -6,6 +6,8 @@
 #include "Enemy/MyEnemy.h"
 #include "Devil.generated.h"
 
+class ADevilWeapon;
+
 UCLASS()
 class TALESOFTHEPALADIN_API ADevil : public AMyEnemy
 {
@@ -21,4 +23,11 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	float DefaultSpeed{ 300.f };
+
+	/*
+		COMBAT
+	*/
+	ADevilWeapon* DevilWeapon{};
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ADevilWeapon> DevilWeaponClass{};
 };

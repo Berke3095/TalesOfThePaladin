@@ -14,6 +14,7 @@ AWeapon::AWeapon()
 	WeaponMesh->SetCollisionResponseToChannels(ECollisionResponse::ECR_Ignore);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	// Activate for hit
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(RootComponent);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision); // Make it on, in anim notify later on

@@ -44,7 +44,7 @@ void AMyEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ChasePlayer();
+	ChasePlayer();
 }
 
 void AMyEnemy::ChasePlayer()
