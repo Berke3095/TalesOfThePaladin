@@ -243,6 +243,6 @@ public:
 	const ETurnState GetTurnState() const { return TurnState; }
 
 	// For fabric
-	const APlayerWeapon* GetPlayerWeapon();
-	const USkeletalMeshComponent* GetMeshComponent();
+	const APlayerWeapon* GetPlayerWeapon() const { return PlayerWeapon ? PlayerWeapon : nullptr; }
+	const USkeletalMeshComponent* GetMeshComponent() const { return MeshComponent ? MeshComponent : nullptr; }
 };

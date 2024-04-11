@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Weapons/Weapon.h"
-#include "PlayerWeapon.generated.h"
+#include "DevilWeapon.generated.h"
 
 UCLASS()
-class TALESOFTHEPALADIN_API APlayerWeapon : public AWeapon
+class TALESOFTHEPALADIN_API ADevilWeapon : public AWeapon
 {
 	GENERATED_BODY()
 	
 public:
 
-	APlayerWeapon();
+	ADevilWeapon();
 
 private:
 

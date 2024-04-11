@@ -194,7 +194,7 @@ void AMyCharacter::Aim(const FInputActionValue& InputValue)
 		{
 			MoveState = EMoveState::EMS_AimState;
 			GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
-			PlayerWeapon->WeaponMesh->SetVisibility(false);
+			PlayerWeapon->GetWeaponMesh()->SetVisibility(false);
 		}
 	}
 }
@@ -205,7 +205,7 @@ void AMyCharacter::DropAim()
 	{
 		MoveState = EMoveState::EMS_NONE;
 		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
-		PlayerWeapon->WeaponMesh->SetVisibility(true);
+		PlayerWeapon->GetWeaponMesh()->SetVisibility(true);
 	}
 }
 
@@ -644,17 +644,6 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 		}
 	}
 }
-
-const APlayerWeapon* AMyCharacter::GetPlayerWeapon() {
-	if (PlayerWeapon) { return PlayerWeapon; }
-	else { return nullptr; }
-}
-
-const USkeletalMeshComponent* AMyCharacter::GetMeshComponent() {
-	if (MeshComponent) { return MeshComponent; }
-	else { return nullptr; }
-}
-
 
 // Bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

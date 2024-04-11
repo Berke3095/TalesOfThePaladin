@@ -50,7 +50,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		PlayerWeapon = MyCharacter->GetPlayerWeapon();
 		if (PlayerWeapon && AttackState == EAttackState::EATS_NONE)
 		{
-			OffHandTransform = PlayerWeapon->WeaponMesh->GetSocketTransform(FName("OffHandSocket"), ERelativeTransformSpace::RTS_World);
+			OffHandTransform = PlayerWeapon->GetWeaponMesh()->GetSocketTransform(FName("OffHandSocket"), ERelativeTransformSpace::RTS_World);
 			FVector OutPosition{};
 			FRotator OutRotation{};
 			MyCharacter->GetMeshComponent()->TransformToBoneSpace(FName("Hand_R"), OffHandTransform.GetLocation(), FRotator::ZeroRotator, OutPosition, OutRotation);
