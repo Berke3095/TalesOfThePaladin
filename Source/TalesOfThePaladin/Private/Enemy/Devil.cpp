@@ -9,7 +9,7 @@
 
 ADevil::ADevil()
 {
-	PrimaryActorTick.bCanEverTick = false; 
+	PrimaryActorTick.bCanEverTick = true; 
 
 	// Movement attributes
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;

@@ -204,6 +204,7 @@ void AMyCharacter::DropAim()
 	if (MoveState == EMoveState::EMS_AimState)
 	{
 		MoveState = EMoveState::EMS_NONE;
+		AttackState = EAttackState::EATS_NONE; 
 		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 		PlayerWeapon->GetWeaponMesh()->SetVisibility(true);
 	}
