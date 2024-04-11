@@ -34,4 +34,9 @@ void ADevil::BeginPlay()
 void ADevil::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AimOffset(DeltaTime, DevilYaw, DevilPitch);
+
+	UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
+	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);
 }

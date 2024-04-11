@@ -30,4 +30,15 @@ private:
 	ADevilWeapon* DevilWeapon{};
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ADevilWeapon> DevilWeaponClass{};
+
+	/*
+		OFFSET
+	*/
+	float DevilYaw{};
+	float DevilPitch{};
+
+public:
+
+	const float GetDevilYaw() const { return DevilYaw; }
+	const float GetDevilPitch() const { return DevilPitch; }
 };

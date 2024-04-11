@@ -90,11 +90,6 @@ protected:
 	USoundCue* SpellPickNumberSounds[2]; 
 
 	/*
-		OFFSET
-	*/
-	void AimOffset(float DeltaTime);
-
-	/*
 		CAMERA
 	*/
 	UPROPERTY(BlueprintReadOnly)
@@ -189,6 +184,8 @@ private:
 	/*
 		OFFSET
 	*/
+	void AimOffset(float DeltaTime);
+
 	float CharacterYaw{};
 	float CharacterPitch{};
 	float InterptYaw{};

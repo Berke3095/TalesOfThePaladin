@@ -34,5 +34,14 @@ protected:
 	// Character move direction
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float DevilDirection{};
+
+	/*
+		OFFSETS
+	*/
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float DevilPitch{};
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float DevilYaw{};
 	
 };

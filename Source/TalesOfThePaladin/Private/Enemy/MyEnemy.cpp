@@ -8,6 +8,7 @@
 
 // Kismet
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h" // Math
 
 #include "AIController.h" 
 
@@ -45,6 +46,37 @@ void AMyEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// ChasePlayer();
+}
+
+void AMyEnemy::AimOffset(float DeltaTime, float EnemyYaw, float EnemyPitch)
+{
+	if (MyCharacter)
+	{
+		FVector Velocity = GetVelocity();
+		float Speed = Velocity.Size();
+
+		if (Speed == 0.f)
+		{
+			// The direction towards the player
+			FVector DirectionToPlayer = MyCharacter->GetActorLocation() - GetActorLocation().GetSafeNormal();
+
+			// Calculating character yaw for offset
+			FRotator AimRotation = DirectionToPlayer.Rotation();
+			FRotator LookRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+			FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(LookRotation, StartingRotation); // CurrentRotation - StartingRotation
+			EnemyYaw = DeltaRotation.Yaw;
+
+			// TurnInPlace(DeltaTime);
+		}
+		if (Speed > 0.f)
+		{
+			//Get the yaw of camera as soon as character walks
+			StartingRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+			EnemyYaw = FMath::FInterpTo(EnemyYaw, 0.f, DeltaTime, 5.f);
+		}
+
+		EnemyPitch = GetBaseAimRotation().Pitch;
+	}
 }
 
 void AMyEnemy::ChasePlayer()

@@ -30,4 +30,10 @@ void UDevilAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		// Getting the speed of the devil
 		Speed = UKismetMathLibrary::VSizeXY(DevilMovement->Velocity);
 	}
+	if (Devil)
+	{
+		// Getting delta rotations for offset
+		DevilYaw = Devil->GetDevilYaw();
+		DevilPitch = Devil->GetDevilPitch();
+	}
 }

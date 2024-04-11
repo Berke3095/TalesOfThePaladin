@@ -21,6 +21,11 @@ protected:
 	UPROPERTY()
 	float AcceptanceRadius{ 50.f };
 
+	/*
+		OFFSET
+	*/
+	void AimOffset(float DeltaTime, float EnemyYaw, float EnemyPitch);
+
 private:
 
 	/*
@@ -34,4 +39,6 @@ private:
 	class AAIController* EnemyController{};
 
 	void ChasePlayer(); // Go after player
+
+	FRotator StartingRotation{};
 };
