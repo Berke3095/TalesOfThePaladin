@@ -556,9 +556,9 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 {
 	if (FMath::Abs(CharacterYaw) > TurnInPlaceLimit)
 	{
-		if (AttackState == EAttackState::EATS_NONE)
+		if (AttackState == EAttackState::EATS_NONE && MyCharacterAnimInstance && TurnInPlaceMontage)
 		{
-			if (MyCharacterAnimInstance && TurnInPlaceMontage && !MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+			if (!MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
 			{
 				MyCharacterAnimInstance->Montage_Play(TurnInPlaceMontage);
 
@@ -585,6 +585,12 @@ void AMyCharacter::TurnInPlace(float DeltaTime)
 		}
 		else
 		{
+			if (MyCharacterAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+			{
+				MyCharacterAnimInstance->Montage_Stop(0.3f, TurnInPlaceMontage);
+				TurnState = ETurnState::ETS_NONE;
+			}
+
 			InterptYaw = FMath::FInterpTo(InterptYaw, 0.f, DeltaTime, 5.0f); // Dont turn in place during attack, montages conflict
 			CharacterYaw = InterptYaw;
 
