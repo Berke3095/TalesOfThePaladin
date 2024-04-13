@@ -22,7 +22,7 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	float DefaultSpeed{ 300.f };
+	// float DefaultSpeed{ 300.f };
 
 	/*
 		COMBAT

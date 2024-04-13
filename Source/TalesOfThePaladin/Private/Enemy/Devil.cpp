@@ -12,7 +12,7 @@ ADevil::ADevil()
 	PrimaryActorTick.bCanEverTick = true; 
 
 	// Movement attributes
-	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	// GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
 
 void ADevil::BeginPlay()
@@ -36,7 +36,7 @@ void ADevil::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AimOffset(DeltaTime, DevilYaw, DevilPitch);
-	ChasePlayer(); 
+	// ChasePlayer(); 
 
 	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
 	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/
