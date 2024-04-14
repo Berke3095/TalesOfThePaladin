@@ -7,12 +7,12 @@
 // Attributes
 #include "GameFramework/CharacterMovementComponent.h"
 
+// My character
+#include "Characters/MyCharacter.h"
+
 ADevil::ADevil()
 {
 	PrimaryActorTick.bCanEverTick = true; 
-
-	// Movement attributes
-	// GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 }
 
 void ADevil::BeginPlay()
@@ -29,6 +29,10 @@ void ADevil::BeginPlay()
 			DevilWeapon->Equip(GetMesh(), FName("WeaponSocket"));
 		}
 	}
+	if (MyCharacter)
+	{
+		Speed = 300.0f;
+	}
 }
 
 void ADevil::Tick(float DeltaTime)
@@ -36,7 +40,13 @@ void ADevil::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AimOffset(DeltaTime, DevilYaw, DevilPitch);
-	// ChasePlayer(); 
+
+	if (MyCharacter)
+	{
+		CustomMoveTo(DeltaTime, MyCharacter->GetActorLocation(), Speed, AcceptanceRadius);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), Speed);
 
 	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
 	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/

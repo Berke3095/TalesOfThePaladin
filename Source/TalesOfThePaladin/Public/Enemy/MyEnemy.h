@@ -18,8 +18,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY()
-	float AcceptanceRadius{ 50.f };
+	class AMyCharacter* MyCharacter; // Player ref
 
 	/*
 		OFFSET
@@ -29,7 +28,8 @@ protected:
 	/*
 		MOVEMENT
 	*/
-	void ChasePlayer(); // Go after player
+	void ChasePlayer(float StopRadius); // Go after player
+	void CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance); // For root motion movement
 
 private:
 
@@ -38,8 +38,6 @@ private:
 	*/
 	class UCapsuleComponent* CapsuleComponent{};
 	class USkeletalMeshComponent* MeshComponent{};
-
-	class AMyCharacter* MyCharacter; // Player ref
 
 	class AAIController* EnemyController{};
 

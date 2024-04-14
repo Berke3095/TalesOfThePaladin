@@ -77,18 +77,47 @@ void AMyEnemy::AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch)
 		{
 			//Get the yaw of camera as soon as character walks
 			StartingRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.f);
-			EnemyYaw = FMath::FInterpTo(EnemyYaw, 0.f, DeltaTime, 5.f);
+			// EnemyYaw = FMath::FInterpTo(EnemyYaw, 0.f, DeltaTime, 5.f);
 		}
+		EnemyYaw = DeltaRotation.Yaw;
 		EnemyPitch = DeltaRotation.Pitch; 
 	}
 }
 
-void AMyEnemy::ChasePlayer()
+void AMyEnemy::ChasePlayer(float StopRadius)
 {
 	EnemyController = Cast<AAIController>(GetController());
 	if (EnemyController && MyCharacter)
 	{
-		EnemyController->MoveToActor(MyCharacter, AcceptanceRadius);
+		EnemyController->MoveToActor(MyCharacter, StopRadius);
+	}
+}
+
+void AMyEnemy::CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance)
+{
+	FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head");
+	FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head");
+
+	// The direction towards the player
+	FVector DirectionToPlayer = (CharacterHeadLocation - EnemyHeadLocation).GetSafeNormal();
+	DirectionToPlayer.Z = 0.0f; // Ignore vertical component
+
+	FRotator AimRotation = DirectionToPlayer.Rotation();
+
+	// Interpolate Devil's rotation towards the target rotation
+	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime, 5.0f);
+
+	SetActorRotation(InterpolatedRotation);
+
+	float Distance = FVector::Distance(Location, GetActorLocation());
+
+	if (Distance <= Acceptance)
+	{
+		Speed = 0.0f;
+	}
+	else
+	{
+		Speed = 300.0f;
 	}
 }
 

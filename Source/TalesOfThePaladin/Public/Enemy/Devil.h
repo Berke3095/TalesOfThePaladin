@@ -22,8 +22,6 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	// float DefaultSpeed{ 300.f };
-
 	/*
 		COMBAT
 	*/
@@ -37,8 +35,15 @@ private:
 	float DevilYaw{};
 	float DevilPitch{};
 
+	/*
+		MOVEMENT
+	*/
+	float AcceptanceRadius{ 100.f };
+	float Speed{0.0f};
+
 public:
 
 	const float GetDevilYaw() const { return DevilYaw; }
 	const float GetDevilPitch() const { return DevilPitch; }
+	const float GetSpeed() const { return Speed; }
 };

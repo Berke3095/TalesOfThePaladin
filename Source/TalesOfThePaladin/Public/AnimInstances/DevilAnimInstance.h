@@ -23,18 +23,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	class ADevil* Devil{};
 
-	// Creating devil movement reference
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	class UCharacterMovementComponent* DevilMovement{};
-
-	// Character speed
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	float Speed{};
-
-	// Character move direction
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	float DevilDirection{};
-
 	/*
 		OFFSETS
 	*/
@@ -43,5 +31,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float DevilYaw{};
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float Speed{};
 	
 };
