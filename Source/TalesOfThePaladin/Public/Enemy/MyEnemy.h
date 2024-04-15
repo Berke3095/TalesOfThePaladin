@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Enemy/EnemyStates.h"
 #include "MyEnemy.generated.h"
 
 UCLASS()
@@ -29,7 +30,15 @@ protected:
 		MOVEMENT
 	*/
 	void ChasePlayer(float StopRadius); // Go after player
-	void CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance); // For root motion movement
+	virtual void CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance, float EnemyYaw, float MaxYaw); // For root motion movement
+	void TurnInPlace(float DeltaTime, float EnemyYaw, float MaxYaw, UAnimInstance* EnemyAnimInstance, UAnimMontage* TurnInPlaceMontage, 
+		EEnemyAttackState EnemyAttackState, EEnemyTurnState EnemyTurnState);
+
+	/*
+		STATES
+	*/
+	EEnemyTurnState EnemyTurnState = EEnemyTurnState::EETS_NONE;
+	EEnemyAttackState EnemyAttackState = EEnemyAttackState::EEAS_NONE;
 
 private:
 

@@ -7,6 +7,7 @@
 #include "Devil.generated.h"
 
 class ADevilWeapon;
+class UAnimMontage;
 
 UCLASS()
 class TALESOFTHEPALADIN_API ADevil : public AMyEnemy
@@ -16,6 +17,14 @@ class TALESOFTHEPALADIN_API ADevil : public AMyEnemy
 public:
 
 	ADevil();
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TurnInPlaceMontage{};
+
+	UPROPERTY(BlueprintReadOnly, Category = "Animation")
+	class UDevilAnimInstance* DevilAnimInstance{};
 
 private:
 
@@ -34,12 +43,14 @@ private:
 	*/
 	float DevilYaw{};
 	float DevilPitch{};
+	const float MaxYaw{90.0f};
 
 	/*
 		MOVEMENT
 	*/
-	float AcceptanceRadius{ 100.f };
+	const float AcceptanceRadius{ 150.f };
 	float Speed{0.0f};
+	virtual void CustomMoveTo(float DeltaTime, FVector Location, float& Speed, float Acceptance, float EnemyYaw, float MaxYaw) override;
 
 public:
 

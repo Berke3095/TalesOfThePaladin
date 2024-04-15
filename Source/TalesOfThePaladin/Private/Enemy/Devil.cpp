@@ -10,6 +10,10 @@
 // My character
 #include "Characters/MyCharacter.h"
 
+// Animation
+#include "AnimInstances/DevilAnimInstance.h" 
+#include "Animation/AnimMontage.h"
+
 ADevil::ADevil()
 {
 	PrimaryActorTick.bCanEverTick = true; 
@@ -33,6 +37,8 @@ void ADevil::BeginPlay()
 	{
 		Speed = 300.0f;
 	}
+	// Get reference for mycharacter animinstance 
+	DevilAnimInstance = Cast<UDevilAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
 void ADevil::Tick(float DeltaTime)
@@ -43,7 +49,7 @@ void ADevil::Tick(float DeltaTime)
 
 	if (MyCharacter)
 	{
-		CustomMoveTo(DeltaTime, MyCharacter->GetActorLocation(), Speed, AcceptanceRadius);
+		CustomMoveTo(DeltaTime, MyCharacter->GetActorLocation(), Speed, AcceptanceRadius, DevilYaw, MaxYaw);
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Speed: %f"), Speed);
@@ -51,3 +57,13 @@ void ADevil::Tick(float DeltaTime)
 	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
 	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/
 }
+
+
+
+void ADevil::CustomMoveTo(float DeltaTime, FVector Location, float& Speed, float Acceptance, float EnemyYaw, float MaxYaw)
+{
+	AMyEnemy::CustomMoveTo(DeltaTime, Location, Speed, Acceptance, EnemyYaw, MaxYaw); 
+
+	TurnInPlace(DeltaTime, EnemyYaw, MaxYaw, DevilAnimInstance, TurnInPlaceMontage, EnemyAttackState, EnemyTurnState);
+}
+

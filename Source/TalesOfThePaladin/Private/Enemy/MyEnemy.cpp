@@ -93,7 +93,7 @@ void AMyEnemy::ChasePlayer(float StopRadius)
 	}
 }
 
-void AMyEnemy::CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance)
+void AMyEnemy::CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance, float EnemyYaw, float MaxYaw)
 {
 	FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head");
 	FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head");
@@ -107,8 +107,6 @@ void AMyEnemy::CustomMoveTo(float DeltaTime, FVector Location, float &Speed, flo
 	// Interpolate Devil's rotation towards the target rotation
 	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime, 5.0f);
 
-	SetActorRotation(InterpolatedRotation);
-
 	float Distance = FVector::Distance(Location, GetActorLocation());
 
 	if (Distance <= Acceptance)
@@ -118,6 +116,42 @@ void AMyEnemy::CustomMoveTo(float DeltaTime, FVector Location, float &Speed, flo
 	else
 	{
 		Speed = 300.0f;
+		SetActorRotation(InterpolatedRotation);
+	}
+}
+
+void AMyEnemy::TurnInPlace(float DeltaTime, float EnemyYaw, float MaxYaw, UAnimInstance* EnemyAnimInstance, UAnimMontage* TurnInPlaceMontage, 
+	EEnemyAttackState EnemyAttackState, EEnemyTurnState EnemyTurnState)
+{
+	if (FMath::Abs(EnemyYaw) > MaxYaw)
+	{
+		if (EnemyAttackState == EEnemyAttackState::EEAS_NONE && EnemyAnimInstance && TurnInPlaceMontage)
+		{
+			if (!EnemyAnimInstance->Montage_IsPlaying(TurnInPlaceMontage))
+			{
+				EnemyAnimInstance->Montage_Play(TurnInPlaceMontage);
+
+				int32 CaseInt{};
+				FName SectionName{};
+
+				if (EnemyYaw < -MaxYaw + 5.0f) { CaseInt = 0; EnemyTurnState = EEnemyTurnState::EETS_TurnLeft; } // Turn left
+				else if (EnemyYaw > MaxYaw - 5.0f) { CaseInt = 1; EnemyTurnState = EEnemyTurnState::EETS_TurnRight; } // Turn Right
+
+				switch (CaseInt)
+				{
+				case 0:
+					SectionName = FName("0");
+					break;
+				case 1:
+					SectionName = FName("1");
+					break;
+				default:
+					break;
+				}
+
+				EnemyAnimInstance->Montage_JumpToSection(SectionName, TurnInPlaceMontage);
+			}
+		}
 	}
 }
 
