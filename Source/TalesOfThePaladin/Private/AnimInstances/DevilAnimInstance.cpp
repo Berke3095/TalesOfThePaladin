@@ -20,5 +20,6 @@ void UDevilAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		DevilYaw = Devil->GetDevilYaw();
 		DevilPitch = Devil->GetDevilPitch();
 		Speed = Devil->GetSpeed();
+		DevilTurnState = Devil->GetTurnState();
 	}
 }

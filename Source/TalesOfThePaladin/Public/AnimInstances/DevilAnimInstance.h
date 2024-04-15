@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Enemy/EnemyStates.h"
 #include "DevilAnimInstance.generated.h"
 
 UCLASS()
@@ -34,5 +35,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float Speed{};
-	
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	EEnemyTurnState DevilTurnState{};
 };

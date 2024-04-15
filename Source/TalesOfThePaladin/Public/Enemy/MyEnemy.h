@@ -24,15 +24,15 @@ protected:
 	/*
 		OFFSET
 	*/
-	void AimOffset(float DeltaTime, float& EnemyYaw, float& EnemyPitch);
+	void AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1);
 
 	/*
 		MOVEMENT
 	*/
-	void ChasePlayer(float StopRadius); // Go after player
-	virtual void CustomMoveTo(float DeltaTime, FVector Location, float &Speed, float Acceptance, float EnemyYaw, float MaxYaw); // For root motion movement
-	void TurnInPlace(float DeltaTime, float EnemyYaw, float MaxYaw, UAnimInstance* EnemyAnimInstance, UAnimMontage* TurnInPlaceMontage, 
-		EEnemyAttackState EnemyAttackState, EEnemyTurnState EnemyTurnState);
+	void ChasePlayer(float StopRadius1); // Go after player
+	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1, float EnemyYaw1, float MaxYaw1); // For root motion movement
+	void TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 
+		EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1);
 
 	/*
 		STATES

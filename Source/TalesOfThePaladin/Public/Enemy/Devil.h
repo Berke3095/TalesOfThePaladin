@@ -50,11 +50,12 @@ private:
 	*/
 	const float AcceptanceRadius{ 150.f };
 	float Speed{0.0f};
-	virtual void CustomMoveTo(float DeltaTime, FVector Location, float& Speed, float Acceptance, float EnemyYaw, float MaxYaw) override;
+	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1, float EnemyYaw1, float MaxYaw1) override;
 
 public:
 
 	const float GetDevilYaw() const { return DevilYaw; }
 	const float GetDevilPitch() const { return DevilPitch; }
 	const float GetSpeed() const { return Speed; }
+	const EEnemyTurnState GetTurnState() const { return EnemyTurnState; }
 };

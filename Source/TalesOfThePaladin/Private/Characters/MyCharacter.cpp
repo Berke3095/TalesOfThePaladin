@@ -115,8 +115,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("CharacterYaw: %f"), CharacterYaw);
 }
 
 /*
