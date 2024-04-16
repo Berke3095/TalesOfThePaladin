@@ -43,14 +43,14 @@ private:
 	*/
 	float DevilYaw{};
 	float DevilPitch{};
-	const float MaxYaw{90.0f};
+	const float MaxYaw{30.0f};
 
 	/*
 		MOVEMENT
 	*/
 	const float AcceptanceRadius{ 150.f };
 	float Speed{0.0f};
-	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1, float EnemyYaw1, float MaxYaw1) override;
+	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1) override;
 
 public:
 

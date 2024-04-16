@@ -59,7 +59,7 @@ void AMyEnemy::AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1)
 	{
 		FRotator DeltaRotation;
 		FVector Velocity = GetVelocity();
-		float Speed = Velocity.Size();
+		float AngularSpeed = Velocity.Size();
 
 		FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head"); 
 		FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head"); 
@@ -69,9 +69,9 @@ void AMyEnemy::AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1)
 		FRotator AimRotation = DirectionToPlayer.Rotation();
 		DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(AimRotation, StartingRotation); // AimRotation - StartingRotation
 
-		if (Speed > 0.f)
+		if (AngularSpeed > 0.f)
 		{
-			StartingRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.f);
+			StartingRotation = FRotator(0.0f, GetBaseAimRotation().Yaw, 0.f); // As the enemy turns, follow with base aim rotation
 		}
 		EnemyYaw1 = DeltaRotation.Yaw;
 		EnemyPitch1 = DeltaRotation.Pitch; 
@@ -87,7 +87,7 @@ void AMyEnemy::ChasePlayer(float StopRadius1)
 	}
 }
 
-void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1, float EnemyYaw1, float MaxYaw1)
+void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1)
 {
 	FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head");
 	FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head");
@@ -109,17 +109,17 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 	}
 	else
 	{
-		Speed1 = 0.0f;
+		Speed1 = 300.0f;
 		SetActorRotation(InterpolatedRotation);
 	}
 }
 
 void AMyEnemy::TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 
-	EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1)
+	EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1, float Speed1)
 {
 	if (FMath::Abs(EnemyYaw1) > MaxYaw1)
 	{
-		if (EnemyAttackState == EEnemyAttackState::EEAS_NONE && EnemyAnimInstance1 && TurnInPlaceMontage1)
+		if (EnemyAttackState == EEnemyAttackState::EEAS_NONE && EnemyAnimInstance1 && TurnInPlaceMontage1 && Speed1 == 0.0f)
 		{
 			if (!EnemyAnimInstance1->Montage_IsPlaying(TurnInPlaceMontage1))
 			{
@@ -146,15 +146,21 @@ void AMyEnemy::TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UA
 				EnemyAnimInstance1->Montage_JumpToSection(SectionName, TurnInPlaceMontage1);
 			}
 		}
-		if (EnemyAnimInstance1->Montage_IsPlaying(TurnInPlaceMontage1))
+		else 
 		{
-			EnemyAnimInstance1->Montage_Stop(0.3f, TurnInPlaceMontage1);
-			EnemyTurnState1 = EEnemyTurnState::EETS_NONE;
+			if (EnemyAnimInstance1->Montage_IsPlaying(TurnInPlaceMontage1))
+			{
+				EnemyAnimInstance1->Montage_Stop(0.3f, TurnInPlaceMontage1);
+				EnemyTurnState1 = EEnemyTurnState::EETS_NONE;
+			}
 		}
 	}
 	else
 	{
-		EnemyTurnState1 = EEnemyTurnState::EETS_NONE;
+		if (!EnemyAnimInstance1->Montage_IsPlaying(TurnInPlaceMontage1)) 
+		{
+			EnemyTurnState1 = EEnemyTurnState::EETS_NONE; 
+		}
 	}
 }
 
