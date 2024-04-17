@@ -34,8 +34,6 @@ protected:
 	void TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 
 		EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1, float Speed1);
 
-	class UNavigationPath* NavSys{};
-
 	/*
 		STATES
 	*/
