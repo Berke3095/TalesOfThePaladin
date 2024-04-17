@@ -49,10 +49,10 @@ void ADevil::Tick(float DeltaTime)
 
 	if (MyCharacter)
 	{
-		CustomMoveTo(DeltaTime, MyCharacter->GetActorLocation(), Speed, AcceptanceRadius);
+		CustomMoveTo(DeltaTime, MyCharacter->GetActorLocation(), Speed, AcceptanceRadius, PathAcceptanceRadius);
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
+	// UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
 
 	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
 	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/
@@ -60,9 +60,9 @@ void ADevil::Tick(float DeltaTime)
 
 
 
-void ADevil::CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1)
+void ADevil::CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1, float PathAcceptance1)
 {
-	AMyEnemy::CustomMoveTo(DeltaTime1, Location1, Speed1, Acceptance1); 
+	AMyEnemy::CustomMoveTo(DeltaTime1, Location1, Speed1, Acceptance1, PathAcceptance1);
 
 	TurnInPlace(DeltaTime1, DevilYaw, MaxYaw, DevilAnimInstance, TurnInPlaceMontage, EnemyAttackState, EnemyTurnState, Speed1);
 }

@@ -14,6 +14,9 @@
 #include "AIController.h" 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NavigationSystem.h"
+#include "NavigationPath.h"
+
+#include "DrawDebugHelpers.h"
 
 AMyEnemy::AMyEnemy()
 {
@@ -79,37 +82,79 @@ void AMyEnemy::AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1)
 	}
 }
 
-void AMyEnemy::ChasePlayer(float StopRadius1)
+void AMyEnemy::ChasePlayer(float Acceptance1)
 {
 	EnemyController = Cast<AAIController>(GetController());
 	if (EnemyController && MyCharacter)
 	{
-		EnemyController->MoveToActor(MyCharacter, StopRadius1);
+		EnemyController->MoveToActor(MyCharacter, Acceptance1);
 	}
 }
 
-void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1)
+void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1, float PathAcceptance1)
 {
-	// The direction towards the player
-	FVector DirectionToLocation = (Location1 - GetActorLocation()).GetSafeNormal();
-	DirectionToLocation.Z = 0.0f; // Ignore vertical component
+	float DistanceToLocation = FVector::Distance(Location1, GetActorLocation());
+	if (DistanceToLocation > Acceptance1) { bIsAtDestination = false; }
 
-	FRotator AimRotation = DirectionToLocation.Rotation();
-
-	// Interpolate Devil's rotation towards the target rotation
-	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
-
-	float Distance = FVector::Distance(Location1, GetActorLocation());
-
-	if (Distance <= Acceptance1)
+	if (bIsAtDestination == false)
 	{
-		Speed1 = 0.0f;
+		if (PathPoints.Num() == 0)
+		{
+			UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(GetWorld(), GetActorLocation(), Location1); // Get path points
+			if (NavPath)
+			{
+				PathIndex = 0;
+				for (FNavPathPoint Point : NavPath->PathPoints)
+				{
+					PathPoints.Add(Point.Location); // Add path points
+				}
+			}
+		}
+		else if (PathPoints.Num() > 0) // As the array is filled with points, execute
+		{
+			// The direction towards the player
+			FVector DirectionToLocation = (PathPoints[PathIndex] - GetActorLocation()).GetSafeNormal();
+			DirectionToLocation.Z = 0.0f; // Ignore vertical component
+
+			FRotator AimRotation = DirectionToLocation.Rotation();
+
+			// Interpolate Devil's rotation towards the target rotation
+			FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
+
+			FVector StartLocation = PathPoints[PathIndex];
+			FVector EndLocation = StartLocation + FVector(0, 0, 50); // +50 Z axis
+			DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1, 0, 5); // Change color as needed 
+
+			float DistanceToPath = FVector::Distance(PathPoints[PathIndex], GetActorLocation());
+
+			if (DistanceToPath <= PathAcceptance1)
+			{
+				PathIndex++;
+				if (PathIndex == PathPoints.Num())
+				{
+					PathPoints.Empty(); // Reached the end of the path, clear the path points
+					PathIndex = 0;
+					Speed1 = 0.0f;
+					bIsAtDestination = true;
+					return;
+				}
+			}
+			else if (DistanceToLocation <= Acceptance1)
+			{
+				PathPoints.Empty(); // Reached the end of the path, clear the path points
+				PathIndex = 0;
+				Speed1 = 0.0f;
+				bIsAtDestination = true;
+				return;
+			}
+			else
+			{
+				Speed1 = 300.0f;
+				SetActorRotation(InterpolatedRotation);
+			}
+		}
 	}
-	else
-	{
-		Speed1 = 300.0f;
-		SetActorRotation(InterpolatedRotation);
-	}
+	
 }
 
 void AMyEnemy::TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 

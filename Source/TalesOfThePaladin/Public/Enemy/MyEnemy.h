@@ -29,10 +29,13 @@ protected:
 	/*
 		MOVEMENT
 	*/
-	void ChasePlayer(float StopRadius1); // Go after player
-	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1); // For root motion movement
+	void ChasePlayer(float Acceptance1); // Go after player
+	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1, float PathAcceptance1); // For root motion movement
 	void TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 
 		EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1, float Speed1);
+	TArray<FVector> PathPoints{};
+	int32 PathIndex{};
+	bool bIsAtDestination{};
 
 	/*
 		STATES

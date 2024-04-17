@@ -49,8 +49,9 @@ private:
 		MOVEMENT
 	*/
 	const float AcceptanceRadius{ 150.f };
+	const float PathAcceptanceRadius{ 140.f };
 	float Speed{0.0f};
-	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1) override;
+	virtual void CustomMoveTo(float DeltaTime1, FVector Location1, float& Speed1, float Acceptance1, float PathAcceptance1) override;
 
 public:
 
