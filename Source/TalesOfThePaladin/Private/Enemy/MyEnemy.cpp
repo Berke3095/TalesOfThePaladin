@@ -13,6 +13,7 @@
 // Movement
 #include "AIController.h" 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "NavigationSystem.h"
 
 AMyEnemy::AMyEnemy()
 {
