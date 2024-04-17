@@ -90,14 +90,11 @@ void AMyEnemy::ChasePlayer(float StopRadius1)
 
 void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, float Acceptance1)
 {
-	FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head");
-	FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head");
-
 	// The direction towards the player
-	FVector DirectionToPlayer = (CharacterHeadLocation - EnemyHeadLocation).GetSafeNormal();
-	DirectionToPlayer.Z = 0.0f; // Ignore vertical component
+	FVector DirectionToLocation = (Location1 - GetActorLocation()).GetSafeNormal();
+	DirectionToLocation.Z = 0.0f; // Ignore vertical component
 
-	FRotator AimRotation = DirectionToPlayer.Rotation();
+	FRotator AimRotation = DirectionToLocation.Rotation();
 
 	// Interpolate Devil's rotation towards the target rotation
 	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
