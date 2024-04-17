@@ -59,7 +59,7 @@ void AMyEnemy::AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1)
 	{
 		FRotator DeltaRotation;
 		FVector Velocity = GetVelocity();
-		float AngularSpeed = Velocity.Size();
+		float AngularSpeed = Velocity.Size(); // Angular speed in this case
 
 		FVector CharacterHeadLocation = MyCharacter->GetMeshComponent()->GetBoneLocation("head"); 
 		FVector EnemyHeadLocation = MeshComponent->GetBoneLocation("head"); 
@@ -117,9 +117,9 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 void AMyEnemy::TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UAnimInstance* EnemyAnimInstance1, UAnimMontage* TurnInPlaceMontage1, 
 	EEnemyAttackState EnemyAttackState1, EEnemyTurnState& EnemyTurnState1, float Speed1)
 {
-	if (FMath::Abs(EnemyYaw1) > MaxYaw1)
+	if (FMath::Abs(EnemyYaw1) > MaxYaw1 && Speed1 == 0.0f)
 	{
-		if (EnemyAttackState == EEnemyAttackState::EEAS_NONE && EnemyAnimInstance1 && TurnInPlaceMontage1 && Speed1 == 0.0f)
+		if (EnemyAttackState == EEnemyAttackState::EEAS_NONE && EnemyAnimInstance1 && TurnInPlaceMontage1)
 		{
 			if (!EnemyAnimInstance1->Montage_IsPlaying(TurnInPlaceMontage1))
 			{
