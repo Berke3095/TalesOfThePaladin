@@ -121,7 +121,7 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 			FRotator AimRotation = DirectionToLocation.Rotation();
 
 			// Interpolate Devil's rotation towards the target rotation
-			FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 10.0f);
+			FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
 
 			FVector StartLocation = PathPoints[PathIndex];
 			FVector EndLocation = StartLocation + FVector(0, 0, 50); // +50 Z axis

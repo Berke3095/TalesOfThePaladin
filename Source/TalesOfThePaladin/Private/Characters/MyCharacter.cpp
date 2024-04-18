@@ -131,6 +131,11 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 			MyCharacterAnimInstance->Montage_Stop(0.3f, TurnInPlaceMontage);
 			TurnState = ETurnState::ETS_NONE;
 		}
+		// Get Dot to calculate forwardish movement
+		FVector ForwardVector = GetActorForwardVector();
+		FVector VelocityDirection = GetVelocity().GetSafeNormal();
+		DotProductForward = FVector::DotProduct(ForwardVector, VelocityDirection);
+
 		// Get controller yaw rotation
 		const FRotator ControlRotation = Controller->GetControlRotation();
 		const FRotator ControlYawRotation(0, ControlRotation.Yaw, 0);
@@ -152,11 +157,6 @@ void AMyCharacter::Sprint(const FInputActionValue& InputValue)
 	{
 		if (MoveState == EMoveState::EMS_NONE || MoveState == EMoveState::EMS_SprintState)
 		{
-			// Get Dot to calculate forwardish movement
-			FVector ForwardVector = GetActorForwardVector();
-			FVector VelocityDirection = GetVelocity().GetSafeNormal();
-			float DotProductForward = FVector::DotProduct(ForwardVector, VelocityDirection);
-
 			if (DotProductForward > 0.9f) // If moving forward
 			{
 				MoveState = EMoveState::EMS_SprintState;

@@ -229,6 +229,11 @@ private:
 	*/
 	class UImpactCameraShake* ImpactCameraShake{};
 
+	/*
+		OTHER
+	*/
+	float DotProductForward{};
+
 public:
 	// to be shared with MyCharacter anim instance
 	const float GetCharacterYaw() const { return CharacterYaw; }
@@ -242,4 +247,7 @@ public:
 	// For fabric
 	const APlayerWeapon* GetPlayerWeapon() const { return PlayerWeapon ? PlayerWeapon : nullptr; }
 	const USkeletalMeshComponent* GetMeshComponent() const { return MeshComponent ? MeshComponent : nullptr; }
+
+	// Other
+	const float GetDotProductForward() const { return DotProductForward; }
 };
