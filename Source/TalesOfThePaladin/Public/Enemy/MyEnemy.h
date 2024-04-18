@@ -36,6 +36,7 @@ protected:
 	TArray<FVector> PathPoints{};
 	int32 PathIndex{};
 	bool bIsAtDestination{};
+	FVector TargetLocation{};
 
 	/*
 		STATES

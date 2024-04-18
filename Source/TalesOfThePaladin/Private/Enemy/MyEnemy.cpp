@@ -104,6 +104,7 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 			if (NavPath)
 			{
 				PathIndex = 0;
+				TargetLocation = Location1;
 				for (FNavPathPoint Point : NavPath->PathPoints)
 				{
 					PathPoints.Add(Point.Location); // Add path points
@@ -112,6 +113,7 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 		}
 		else if (PathPoints.Num() > 0) // As the array is filled with points, execute
 		{
+			if (FVector::Distance(Location1, TargetLocation) > 10.0f) { PathPoints.Empty(); return; }
 			// The direction towards the player
 			FVector DirectionToLocation = (PathPoints[PathIndex] - GetActorLocation()).GetSafeNormal();
 			DirectionToLocation.Z = 0.0f; // Ignore vertical component
