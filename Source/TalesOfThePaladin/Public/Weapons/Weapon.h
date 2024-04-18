@@ -22,7 +22,7 @@ protected:
 	class USkeletalMeshComponent* WeaponMesh{}; // Weapon mesh 
 public:
 
-	UBoxComponent* GetBoxComponent() const { return BoxComponent ? BoxComponent : nullptr; }
-	USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh ? WeaponMesh : nullptr; }
+	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent ? BoxComponent : nullptr; }
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh ? WeaponMesh : nullptr; }
 	void Equip(USceneComponent* InParent, FName InSocketName);
 };

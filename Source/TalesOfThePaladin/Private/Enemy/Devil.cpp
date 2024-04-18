@@ -57,7 +57,7 @@ void ADevil::Tick(float DeltaTime)
 		if (MyCharacter->GetVelocity().Size() > 0 && DistanceToPlayer > AcceptanceRadius && MyCharacter->GetDotProductForward() < 0.5f && DotProduct > 0.6f)
 		{
 			FVector MovementDirection = MyCharacter->GetVelocity().GetSafeNormal();
-			FVector OffsetLocation = CharacterLocation + MovementDirection * 400.0f;
+			FVector OffsetLocation = CharacterLocation + MovementDirection * 1000.0f;
 			CustomMoveTo(DeltaTime, OffsetLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
 		}
 		else
@@ -65,11 +65,6 @@ void ADevil::Tick(float DeltaTime)
 			CustomMoveTo(DeltaTime, CharacterLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
 		}
 	}
-
-	// UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
-
-	/*UE_LOG(LogTemp, Warning, TEXT("DevilYaw: %f"), DevilYaw);
-	UE_LOG(LogTemp, Warning, TEXT("DevilPitch: %f"), DevilPitch);*/
 }
 
 

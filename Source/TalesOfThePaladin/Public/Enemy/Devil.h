@@ -55,8 +55,8 @@ private:
 
 public:
 
-	const float GetDevilYaw() const { return DevilYaw; }
-	const float GetDevilPitch() const { return DevilPitch; }
-	const float GetSpeed() const { return Speed; }
-	const EEnemyTurnState GetTurnState() const { return EnemyTurnState; }
+	FORCEINLINE const float GetDevilYaw() const { return DevilYaw; }
+	FORCEINLINE const float GetDevilPitch() const { return DevilPitch; }
+	FORCEINLINE const float GetSpeed() const { return Speed; }
+	FORCEINLINE const EEnemyTurnState GetTurnState() const { return EnemyTurnState; }
 };

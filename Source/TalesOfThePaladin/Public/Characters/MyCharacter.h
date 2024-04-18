@@ -236,18 +236,18 @@ private:
 
 public:
 	// to be shared with MyCharacter anim instance
-	const float GetCharacterYaw() const { return CharacterYaw; }
-	const float GetCharacterPitch() const { return CharacterPitch; }
+	FORCEINLINE const float GetCharacterYaw() const { return CharacterYaw; }
+	FORCEINLINE const float GetCharacterPitch() const { return CharacterPitch; }
 
 	// States
-	const EMoveState GetMoveState() const { return MoveState; }
-	const EAttackState GetAttackState() const { return AttackState; }
-	const ETurnState GetTurnState() const { return TurnState; }
+	FORCEINLINE const EMoveState GetMoveState() const { return MoveState; }
+	FORCEINLINE const EAttackState GetAttackState() const { return AttackState; }
+	FORCEINLINE const ETurnState GetTurnState() const { return TurnState; }
 
 	// For fabric
-	const APlayerWeapon* GetPlayerWeapon() const { return PlayerWeapon ? PlayerWeapon : nullptr; }
-	const USkeletalMeshComponent* GetMeshComponent() const { return MeshComponent ? MeshComponent : nullptr; }
+	FORCEINLINE const APlayerWeapon* GetPlayerWeapon() const { return PlayerWeapon ? PlayerWeapon : nullptr; }
+	FORCEINLINE const USkeletalMeshComponent* GetMeshComponent() const { return MeshComponent ? MeshComponent : nullptr; }
 
 	// Other
-	const float GetDotProductForward() const { return DotProductForward; }
+	FORCEINLINE const float GetDotProductForward() const { return DotProductForward; }
 };
