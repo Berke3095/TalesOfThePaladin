@@ -80,6 +80,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void CollisionOn();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void CollisionOff();
+
 	// Projectile sockets
 	UPROPERTY(BlueprintReadOnly) 
 	const USkeletalMeshSocket* RightProjectileSocket {};

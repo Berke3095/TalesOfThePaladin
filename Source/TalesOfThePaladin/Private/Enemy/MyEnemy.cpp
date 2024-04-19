@@ -16,27 +16,26 @@
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 
-#include "DrawDebugHelpers.h"
-
 AMyEnemy::AMyEnemy()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
+	CapsuleComponent->SetGenerateOverlapEvents(true);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap); // Player Weapon
+	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Block); // Player Spell
 	// Collision settings - Make sure custom object type is "Enemy"
 	MeshComponent = GetMesh();
-	MeshComponent->SetGenerateOverlapEvents(true);
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeshComponent->SetGenerateOverlapEvents(false);
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2);
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap); // Player Weapon
-	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel4, ECollisionResponse::ECR_Block); // Player Spell
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Smoother, rotates into the direction it walks to
@@ -122,10 +121,6 @@ void AMyEnemy::CustomMoveTo(float DeltaTime1, FVector Location1, float &Speed1, 
 
 			// Interpolate Devil's rotation towards the target rotation
 			FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
-
-			FVector StartLocation = PathPoints[PathIndex];
-			FVector EndLocation = StartLocation + FVector(0, 0, 50); // +50 Z axis
-			DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, -1, 0, 5); // Change color as needed 
 
 			float DistanceToPath = FVector::Distance(PathPoints[PathIndex], GetActorLocation());
 

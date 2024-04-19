@@ -45,26 +45,26 @@ void ADevil::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AimOffset(DeltaTime, DevilYaw, DevilPitch);
+	//AimOffset(DeltaTime, DevilYaw, DevilPitch);
 
-	if (MyCharacter)
-	{
-		FVector CharacterLocation = MyCharacter->GetActorLocation();
-		float DistanceToPlayer = FVector::Distance(CharacterLocation, GetActorLocation());
-		FVector DevilToPlayer = CharacterLocation - GetActorLocation();
-		float DotProduct = FVector::DotProduct(DevilToPlayer.GetSafeNormal(), GetActorForwardVector()); // Dot of Devil
+	//if (MyCharacter)
+	//{
+	//	FVector CharacterLocation = MyCharacter->GetActorLocation();
+	//	float DistanceToPlayer = FVector::Distance(CharacterLocation, GetActorLocation());
+	//	FVector DevilToPlayer = CharacterLocation - GetActorLocation();
+	//	float DotProduct = FVector::DotProduct(DevilToPlayer.GetSafeNormal(), GetActorForwardVector()); // Dot of Devil
 
-		if (MyCharacter->GetVelocity().Size() > 0 && DistanceToPlayer > AcceptanceRadius && MyCharacter->GetDotProductForward() < 0.5f && DotProduct > 0.6f)
-		{
-			FVector MovementDirection = MyCharacter->GetVelocity().GetSafeNormal();
-			FVector OffsetLocation = CharacterLocation + MovementDirection * 1000.0f;
-			CustomMoveTo(DeltaTime, OffsetLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
-		}
-		else
-		{
-			CustomMoveTo(DeltaTime, CharacterLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
-		}
-	}
+	//	if (MyCharacter->GetVelocity().Size() > 0 && DistanceToPlayer > AcceptanceRadius && MyCharacter->GetDotProductForward() < 0.5f && DotProduct > 0.6f)
+	//	{
+	//		FVector MovementDirection = MyCharacter->GetVelocity().GetSafeNormal();
+	//		FVector OffsetLocation = CharacterLocation + MovementDirection * 1000.0f;
+	//		CustomMoveTo(DeltaTime, OffsetLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
+	//	}
+	//	else
+	//	{
+	//		CustomMoveTo(DeltaTime, CharacterLocation, Speed, AcceptanceRadius, PathAcceptanceRadius);
+	//	}
+	//}
 }
 
 

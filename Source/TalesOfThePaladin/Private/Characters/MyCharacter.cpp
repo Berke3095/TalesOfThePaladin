@@ -32,6 +32,7 @@
 
 // Components
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 
 AMyCharacter::AMyCharacter() // Defaults
 {
@@ -42,6 +43,7 @@ AMyCharacter::AMyCharacter() // Defaults
 
 	// Check for these in editor, sometimes doesn't apply
 	CapsuleComponent = GetCapsuleComponent();
+	CapsuleComponent->SetGenerateOverlapEvents(true);
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -50,8 +52,8 @@ AMyCharacter::AMyCharacter() // Defaults
 
 	// Collision settings - Make sure custom object type is "MainCharacter"
 	MeshComponent = GetMesh();
-	MeshComponent->SetGenerateOverlapEvents(true);
-	MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeshComponent->SetGenerateOverlapEvents(false);
+	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	MeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
@@ -513,6 +515,22 @@ void AMyCharacter::SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocke
 				World->SpawnActor<AProjectile>(SpellClass[ChosenSkill], ProjectileSocketTransform);
 			}
 		}
+	}
+}
+
+void AMyCharacter::CollisionOn()
+{
+	if (PlayerWeapon && PlayerWeapon->GetBoxComponent()->GetCollisionEnabled() != ECollisionEnabled::QueryOnly)
+	{
+		PlayerWeapon->GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+}
+
+void AMyCharacter::CollisionOff()
+{
+	if (PlayerWeapon && PlayerWeapon->GetBoxComponent()->GetCollisionEnabled() != ECollisionEnabled::NoCollision)
+	{
+		PlayerWeapon->GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
