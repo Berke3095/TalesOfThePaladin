@@ -36,6 +36,7 @@ protected:
 		INPUT FUNCTIONS
 	*/
 	void Move(const FInputActionValue& InputValue);
+	void DropMove();
 	void Sprint(const FInputActionValue& InputValue);
 	void DropSprint();
 	void Look(const FInputActionValue& InputValue);
@@ -208,6 +209,8 @@ private:
 	const float AimSpeed{ 200.0f };
 	const float DefaultSpeed{400.0f};
 	const float SprintSpeed{600.0f};
+
+	bool bIsMoving{};
 
 	/*
 		COMBAT

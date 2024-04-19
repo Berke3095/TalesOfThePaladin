@@ -12,9 +12,6 @@ class TALESOFTHEPALADIN_API UCombat : public UActorComponent
 public:
 	UCombat();
 
-	// Projectile direction
-	FVector ProjectileDirection{};
-
 protected:
 
 	const float LineRange{ 4000.0f };
@@ -30,4 +27,13 @@ private:
 	// Start and end of the line trace from screen to forward
 	FVector Start{};
 	FVector End{};
+
+	class AMyEnemy* MarkedEnemy{};
+
+public:
+
+	// Projectile direction
+	FVector ProjectileDirection{};
+
+	FORCEINLINE const AMyEnemy* GetHitEnemy() const { return MarkedEnemy ? MarkedEnemy : nullptr; }
 };

@@ -117,6 +117,8 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("bIsMoving: %s"), bIsMoving ? TEXT("True") : TEXT("False"));
 }
 
 /*
@@ -149,7 +151,14 @@ void AMyCharacter::Move(const FInputActionValue& InputValue)
 		// Adding value to directions
 		AddMovementInput(ForwardDirection, Value.Y);
 		AddMovementInput(RightDirection, Value.X);
+
+		bIsMoving = true;
 	}
+}
+
+void AMyCharacter::DropMove()
+{
+	bIsMoving = false;
 }
 
 void AMyCharacter::Sprint(const FInputActionValue& InputValue)
@@ -675,6 +684,10 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 				MoveState = EMoveState::EMS_NONE;
 				BasicAttackIndex = 0; 
 			}
+			if (NotifyName == FName("DashAttack") && bIsMoving)
+			{
+
+			}
 		}
 	}
 }
@@ -692,6 +705,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &AMyCharacter::DropMove);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AMyCharacter::Aim); 
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMyCharacter::DropAim); 

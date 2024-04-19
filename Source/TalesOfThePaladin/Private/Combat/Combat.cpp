@@ -1,6 +1,7 @@
 #include "Combat/Combat.h" 
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h" // Trace hit sphere
+#include "Enemy/MyEnemy.h"
 
 UCombat::UCombat()
 {
@@ -66,6 +67,12 @@ void UCombat::DrawTrace(FHitResult& TraceHitResult)
 				12,
 				FColor::Red
 			);
+
+			MarkedEnemy = Cast<AMyEnemy>(TraceHitResult.GetActor());
+			if (MarkedEnemy)
+			{
+				
+			}
 		}
 	}
 
