@@ -27,7 +27,7 @@ AProjectile::AProjectile()
 	if (BoxComponent)
 	{
 		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
-		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Block); // Block enemy 
+		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block); // Block enemy 
 		BoxComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 	}
 }

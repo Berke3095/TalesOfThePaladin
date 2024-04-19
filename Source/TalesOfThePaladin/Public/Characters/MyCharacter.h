@@ -230,6 +230,8 @@ private:
 	// Basic attack
 	int32 BasicAttackIndex{};
 
+	class AMyEnemy* Enemy{};
+
 	/*
 		CAMERA
 	*/
