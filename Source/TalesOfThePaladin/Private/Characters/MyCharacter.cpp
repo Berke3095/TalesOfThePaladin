@@ -91,7 +91,7 @@ void AMyCharacter::BeginPlay()
 		PlayerWeapon = GetWorld()->SpawnActor<APlayerWeapon>(PlayerWeaponClass, WeaponSocketTransform);
 		if (PlayerWeapon)
 		{
-			PlayerWeapon->Equip(GetMesh(), FName("WeaponSocket"));
+			PlayerWeapon->Equip(GetMesh(), FName("WeaponSocket"), this);
 		}
 	}
 
@@ -117,8 +117,6 @@ void AMyCharacter::Tick(float DeltaTime)
 
 	AimOffset(DeltaTime); // Keeping track of delta rotations for aim offset
 	UseControllerYaw(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("bIsMoving: %s"), bIsMoving ? TEXT("True") : TEXT("False"));
 }
 
 /*
@@ -560,6 +558,7 @@ void AMyCharacter::CollisionOff()
 	if (PlayerWeapon && PlayerWeapon->GetBoxComponent()->GetCollisionEnabled() != ECollisionEnabled::NoCollision)
 	{
 		PlayerWeapon->GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		PlayerWeapon->SetbIsHit(false);
 	}
 }
 

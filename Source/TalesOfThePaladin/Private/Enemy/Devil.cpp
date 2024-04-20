@@ -30,7 +30,7 @@ void ADevil::BeginPlay()
 		DevilWeapon = GetWorld()->SpawnActor<ADevilWeapon>(DevilWeaponClass, WeaponSocketTransform);
 		if (DevilWeapon)
 		{
-			DevilWeapon->Equip(GetMesh(), FName("WeaponSocket"));
+			DevilWeapon->Equip(GetMesh(), FName("WeaponSocket"), this);
 		}
 	}
 	if (MyCharacter)

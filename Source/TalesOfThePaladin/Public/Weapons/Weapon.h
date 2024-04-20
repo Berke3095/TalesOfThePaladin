@@ -24,5 +24,5 @@ public:
 
 	FORCEINLINE UBoxComponent* GetBoxComponent() const { return BoxComponent ? BoxComponent : nullptr; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh ? WeaponMesh : nullptr; }
-	void Equip(USceneComponent* InParent, FName InSocketName);
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner); 
 };

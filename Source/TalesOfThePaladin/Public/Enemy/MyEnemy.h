@@ -58,4 +58,11 @@ private:
 		OFFSET
 	*/
 	FRotator StartingRotation{}; 
+
+public:
+
+	/*
+		COMBAT
+	*/
+	bool bIsHit{};
 };

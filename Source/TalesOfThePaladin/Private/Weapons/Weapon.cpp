@@ -23,9 +23,10 @@ AWeapon::AWeapon()
 	BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap); 
 }
 
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);  
 	WeaponMesh->AttachToComponent(InParent, TransformRules, InSocketName); 
+	SetOwner(NewOwner);
 }
 
