@@ -684,10 +684,6 @@ void AMyCharacter::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPa
 				MoveState = EMoveState::EMS_NONE;
 				BasicAttackIndex = 0; 
 			}
-			if (NotifyName == FName("DashAttack") && bIsMoving)
-			{
-
-			}
 		}
 	}
 }
