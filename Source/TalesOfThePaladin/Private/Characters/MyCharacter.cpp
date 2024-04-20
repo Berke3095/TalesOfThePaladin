@@ -244,6 +244,26 @@ void AMyCharacter::AttackStart(const FInputActionValue& InputValue)
 					BasicAttackIndex++;
 					AttackState = EAttackState::EATS_BasicAttacking;
 					MoveState = EMoveState::EMS_AttackState;
+
+					int32 CaseInt{};
+					FName SectionName{};
+
+					if (bIsMoving) { CaseInt = 1; }
+					else { CaseInt = 0; }
+
+					switch (CaseInt)
+					{
+					case 0:
+						SectionName = FName("0");
+						break;
+					case 1:
+						SectionName = FName("1");
+						break;
+					default:
+						break;
+					}
+
+					MyCharacterAnimInstance->Montage_JumpToSection(SectionName, BasicAttackMontage);
 				}
 			}
 			else { BasicAttackIndex++; }
