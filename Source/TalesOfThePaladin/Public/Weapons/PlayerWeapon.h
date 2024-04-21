@@ -28,5 +28,5 @@ private:
 
 public:
 
-	FORCEINLINE void SetbIsHit(bool BoolValue);
+	void SetbIsHit(bool BoolValue);
 };
