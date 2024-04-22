@@ -17,6 +17,7 @@ APlayerWeapon::APlayerWeapon()
 	if (BoxComponent)
 	{
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &APlayerWeapon::OnOverlapBegin);
+		BoxComponent->OnComponentEndOverlap.AddDynamic(this, &APlayerWeapon::OnOverlapEnd);
 	}
 }
 
@@ -28,7 +29,13 @@ void APlayerWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		StartHitStop();
 		HitEnemy->bIsHit = true;
+		UE_LOG(LogTemp, Warning, TEXT("EnemyHit"));
 	}
+}
+
+void APlayerWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	HitEnemy->bIsHit = false;
 }
 
 void APlayerWeapon::StartHitStop()
@@ -54,12 +61,4 @@ void APlayerWeapon::StopHitStop()
 		HitEnemy->CustomTimeDilation = 1.0f;
 	}
 	GetWorldTimerManager().ClearTimer(TimeDilationTimer); 
-}
-
-void APlayerWeapon::SetbIsHit(bool BoolValue)
-{
-	if (HitEnemy)
-	{
-		HitEnemy->bIsHit = BoolValue;
-	}
 }

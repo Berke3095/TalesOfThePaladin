@@ -19,14 +19,13 @@ private:
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	class AMyEnemy* HitEnemy{};
 	class AMyCharacter* MyCharacter{};
 
 	void StartHitStop();
 	void StopHitStop();
 	FTimerHandle TimeDilationTimer{};
-
-public:
-
-	void SetbIsHit(bool BoolValue);
 };

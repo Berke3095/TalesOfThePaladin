@@ -558,7 +558,6 @@ void AMyCharacter::CollisionOff()
 	if (PlayerWeapon && PlayerWeapon->GetBoxComponent()->GetCollisionEnabled() != ECollisionEnabled::NoCollision)
 	{
 		PlayerWeapon->GetBoxComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		PlayerWeapon->SetbIsHit(false);
 	}
 }
 
