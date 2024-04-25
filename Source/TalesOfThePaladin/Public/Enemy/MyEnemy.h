@@ -45,12 +45,16 @@ protected:
 	EEnemyTurnState EnemyTurnState = EEnemyTurnState::EETS_NONE;
 	EEnemyAttackState EnemyAttackState = EEnemyAttackState::EEAS_NONE;
 
+	/*
+		COMPONENTS
+	*/
+	class UCapsuleComponent* CapsuleComponent{};
+
 private:
 
 	/*
 		COMPONENTS
 	*/
-	class UCapsuleComponent* CapsuleComponent{};
 	class USkeletalMeshComponent* MeshComponent{};
 
 	class AAIController* EnemyController{};
