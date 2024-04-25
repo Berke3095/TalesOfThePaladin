@@ -29,13 +29,15 @@ void APlayerWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		StartHitStop();
 		HitEnemy->bIsHit = true;
-		UE_LOG(LogTemp, Warning, TEXT("EnemyHit"));
 	}
 }
 
 void APlayerWeapon::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	HitEnemy->bIsHit = false;
+	if (HitEnemy && HitEnemy->bIsHit)
+	{
+		HitEnemy->bIsHit = false;
+	}
 }
 
 void APlayerWeapon::StartHitStop()
