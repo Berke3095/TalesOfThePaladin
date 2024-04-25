@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Enemy/EnemyStates.h"
+#include "Attributes.h"
 #include "MyEnemy.generated.h"
 
 UCLASS()
@@ -65,4 +66,9 @@ public:
 		COMBAT
 	*/
 	bool bIsHit{};
+
+	/*
+		Attributes
+	*/
+	Attributes EnemyAttributes{};
 };

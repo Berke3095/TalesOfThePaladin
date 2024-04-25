@@ -7,6 +7,10 @@
 // Enums
 #include "Spells/SpellEnums.h"
 #include "Characters/CharacterStates.h"
+
+// Attributes
+#include "Attributes.h"
+
 #include "MyCharacter.generated.h"
 
 class UInputAction; // Used for input mapping
@@ -246,6 +250,11 @@ private:
 	float DotProductForward{};
 
 public:
+	/*
+		Attributes
+	*/
+	Attributes CharacterAttributes{200.0f, 100.0f, 20.0f};
+
 	// to be shared with MyCharacter anim instance
 	FORCEINLINE const float GetCharacterYaw() const { return CharacterYaw; }
 	FORCEINLINE const float GetCharacterPitch() const { return CharacterPitch; }

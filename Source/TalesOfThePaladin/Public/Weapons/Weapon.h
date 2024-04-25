@@ -2,6 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+// Attributes
+#include "Attributes.h"
+
 #include "Weapon.generated.h"
 
 UCLASS()

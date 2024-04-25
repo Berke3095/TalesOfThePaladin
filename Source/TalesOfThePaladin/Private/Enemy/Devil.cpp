@@ -17,6 +17,10 @@
 ADevil::ADevil()
 {
 	PrimaryActorTick.bCanEverTick = true; 
+
+	EnemyAttributes.Health = 200.0f;
+	EnemyAttributes.Mana = 0.0f;
+	EnemyAttributes.Damage = 20.0f;
 }
 
 void ADevil::BeginPlay()
@@ -44,6 +48,8 @@ void ADevil::BeginPlay()
 void ADevil::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), EnemyAttributes.Health);
 
 	//AimOffset(DeltaTime, DevilYaw, DevilPitch);
 

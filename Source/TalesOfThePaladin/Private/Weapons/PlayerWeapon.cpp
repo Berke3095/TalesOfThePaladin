@@ -29,6 +29,10 @@ void APlayerWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		StartHitStop();
 		HitEnemy->bIsHit = true;
+		if (MyCharacter)
+		{
+			HitEnemy->EnemyAttributes.Health -= MyCharacter->CharacterAttributes.Damage;
+		}
 	}
 }
 
