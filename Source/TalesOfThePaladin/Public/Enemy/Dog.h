@@ -22,6 +22,12 @@ private:
 	/*
 		MOVEMENT
 	*/
-	const float AcceptanceRadius{ 150.f };
+	const float AcceptanceRadius{ 75.f };
 	const float DefaultSpeed{ 300.0f };
+
+	/*
+		COMPONENTS
+	*/
+	UPROPERTY(EditDefaultsOnly)
+	class UCapsuleComponent* CustomCapsule{};
 };
