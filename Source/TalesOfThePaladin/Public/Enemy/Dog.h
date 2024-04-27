@@ -22,7 +22,7 @@ private:
 	/*
 		MOVEMENT
 	*/
-	const float AcceptanceRadius{ 75.f };
+	const float AcceptanceRadius{ 90.f };
 	const float DefaultSpeed{ 400.0f };
 
 	/*

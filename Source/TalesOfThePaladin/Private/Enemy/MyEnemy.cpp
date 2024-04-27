@@ -204,3 +204,14 @@ void AMyEnemy::TurnInPlace(float DeltaTime1, float& EnemyYaw1, float MaxYaw1, UA
 	}
 }
 
+void AMyEnemy::FaceToLocation(FVector Location1, float DeltaTime1)
+{
+	FVector DirectionToLocation = (Location1 - GetActorLocation()).GetSafeNormal();
+	DirectionToLocation.Z = 0.0f;
+
+	FRotator AimRotation = DirectionToLocation.Rotation();
+	FRotator InterpolatedRotation = FMath::RInterpTo(GetActorRotation(), AimRotation, DeltaTime1, 5.0f);
+
+	SetActorRotation(InterpolatedRotation); 
+}
+

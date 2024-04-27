@@ -38,6 +38,7 @@ protected:
 	int32 PathIndex{};
 	bool bIsAtDestination{};
 	FVector TargetLocation{};
+	void FaceToLocation(FVector Location1, float DeltaTime1);
 
 	/*
 		STATES

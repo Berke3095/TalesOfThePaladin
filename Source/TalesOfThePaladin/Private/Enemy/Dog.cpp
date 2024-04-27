@@ -7,6 +7,9 @@
 // Attributes
 #include "GameFramework/CharacterMovementComponent.h"
 
+// Reference
+#include "Characters/MyCharacter.h"
+
 ADog::ADog()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,4 +47,12 @@ void ADog::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	ChasePlayer(AcceptanceRadius);
+
+	if (MyCharacter)
+	{
+		FVector CharacterLocation{ MyCharacter->GetActorLocation() };
+		float DistanceToLocation = FVector::Distance(CharacterLocation, GetActorLocation());
+		UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), DistanceToLocation);
+		if (DistanceToLocation <= AcceptanceRadius + 60.f) { FaceToLocation(CharacterLocation, DeltaTime); } // For some reason dog stops at + 60 acceptance, possibly because of capsule 
+	}
 }
