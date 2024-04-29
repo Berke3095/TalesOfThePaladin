@@ -53,6 +53,9 @@ void ADog::Tick(float DeltaTime)
 		FVector CharacterLocation{ MyCharacter->GetActorLocation() };
 		float DistanceToLocation = FVector::Distance(CharacterLocation, GetActorLocation());
 		UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), DistanceToLocation);
-		if (DistanceToLocation <= AcceptanceRadius + 60.f) { FaceToLocation(CharacterLocation, DeltaTime); } // For some reason dog stops at + 60 acceptance, possibly because of capsule 
+		if (DistanceToLocation <= AcceptanceRadius + 60.f) // For some reason dog stops at + 60 acceptance, possibly because of capsule
+		{ 
+			FaceToLocation(CharacterLocation, DeltaTime); 
+		} 
 	}
 }
