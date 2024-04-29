@@ -36,36 +36,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	class UMyCharacterAnimInstance* MyCharacterAnimInstance{};
 
-	/*
-		INPUT FUNCTIONS
-	*/
-	void Move(const FInputActionValue& InputValue);
-	void DropMove();
-	void Sprint(const FInputActionValue& InputValue);
-	void DropSprint();
-	void Look(const FInputActionValue& InputValue);
-	void Aim(const FInputActionValue& InputValue);
-	void DropAim();
-	void AttackStart(const FInputActionValue& InputValue); // Used for one click increments
-	void Attack(const FInputActionValue& InputValue);
-	void DropAttack();
-	void HeavyAttack(const FInputActionValue& InputValue);
-	void DropHeavyAttack();
-	void SpecialMove(const FInputActionValue& InputValue);
-	void SpellSwitchDeactive();
-	void SpellSwitchActive(const FInputActionValue& InputValue);
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* SpellCastMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* HeavyAttackMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* BasicAttackMontage{};
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* TurnInPlaceMontage{};
+	// Projectile sockets
+	UPROPERTY(BlueprintReadOnly) 
+	const USkeletalMeshSocket* RightProjectileSocket {};
+	UPROPERTY(BlueprintReadOnly) 
+	const USkeletalMeshSocket* LeftProjectileSocket {};
 
 	/*
 		CAMERA
@@ -75,30 +50,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UCameraComponent* Camera{};
-
-	/*
-		COMBAT
-	*/
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class ASpell> SpellClass[2];
-
-	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void CollisionOn();
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void CollisionOff();
-
-	// Projectile sockets
-	UPROPERTY(BlueprintReadOnly) 
-	const USkeletalMeshSocket* RightProjectileSocket {};
-	UPROPERTY(BlueprintReadOnly) 
-	const USkeletalMeshSocket* LeftProjectileSocket {};
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* SpellPickNumberSounds[2]; 
 
 	/*
 		CAMERA
@@ -112,6 +63,21 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override; // Bind functionality to input
+
+	/*
+		MONTAGES
+	*/
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* SpellCastMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* HeavyAttackMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* BasicAttackMontage{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TurnInPlaceMontage{};
 
 	/*
 		STATES
@@ -135,6 +101,22 @@ private:
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* CharacterMappingContext{};
+
+	void Move(const FInputActionValue& InputValue);
+	void DropMove();
+	void Sprint(const FInputActionValue& InputValue);
+	void DropSprint();
+	void Look(const FInputActionValue& InputValue);
+	void Aim(const FInputActionValue& InputValue);
+	void DropAim();
+	void AttackStart(const FInputActionValue& InputValue); // Used for one click increments
+	void Attack(const FInputActionValue& InputValue);
+	void DropAttack();
+	void HeavyAttack(const FInputActionValue& InputValue);
+	void DropHeavyAttack();
+	void SpecialMove(const FInputActionValue& InputValue);
+	void SpellSwitchDeactive();
+	void SpellSwitchActive(const FInputActionValue& InputValue);
 
 	// Move
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -219,6 +201,18 @@ private:
 	/*
 		COMBAT
 	*/
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ASpell> SpellClass[2];
+
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void SpawnProjectileAtSocket(const USkeletalMeshSocket* SpawnSocket);
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void CollisionOn();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void CollisionOff();
+
 	APlayerWeapon* PlayerWeapon{};
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APlayerWeapon> PlayerWeaponClass{};
@@ -243,6 +237,12 @@ private:
 		CAMERA
 	*/
 	class UImpactCameraShake* ImpactCameraShake{};
+
+	/*
+		SOUND
+	*/
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* SpellPickNumberSounds[2]; 
 
 	/*
 		OTHER

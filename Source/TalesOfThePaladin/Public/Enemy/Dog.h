@@ -4,7 +4,6 @@
 #include "Enemy/MyEnemy.h"
 #include "Dog.generated.h"
 
-
 UCLASS()
 class TALESOFTHEPALADIN_API ADog : public AMyEnemy
 {
@@ -20,9 +19,20 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	/*
+		ANIMATION
+	*/
+	class UDogAnimInstance* DogAnimInstance{};
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	class UAnimMontage* AttackMontage{};
+
+	void Attack();
+	FTimerHandle AttackTimer{};
+
+	/*
 		MOVEMENT
 	*/
-	const float AcceptanceRadius{ 90.f };
+	const float AcceptanceRadius{ 150.f };
 	const float DefaultSpeed{ 400.0f };
 
 	/*

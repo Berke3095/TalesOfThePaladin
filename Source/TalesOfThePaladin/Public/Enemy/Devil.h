@@ -20,9 +20,6 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Montages")
-	UAnimMontage* TurnInPlaceMontage{};
-
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	class UDevilAnimInstance* DevilAnimInstance{};
 
@@ -30,6 +27,9 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages")
+	UAnimMontage* TurnInPlaceMontage{};
 
 	/*
 		COMBAT
