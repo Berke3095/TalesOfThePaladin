@@ -26,18 +26,20 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	class UAnimMontage* AttackMontage{};
 
-	void Attack();
-	FTimerHandle AttackTimer{};
-
 	/*
 		MOVEMENT
 	*/
-	const float AcceptanceRadius{ 150.f };
-	const float DefaultSpeed{ 400.0f };
+	const float AcceptanceRadius{ 75.f };
+	const float DefaultSpeed{ 600.0f };
 
 	/*
 		COMPONENTS
 	*/
 	UPROPERTY(EditDefaultsOnly)
 	class UCapsuleComponent* CustomCapsule{};
+
+	/*
+		COMBAT
+	*/
+	void Attack();
 };

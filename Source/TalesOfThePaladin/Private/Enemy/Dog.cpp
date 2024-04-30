@@ -14,9 +14,6 @@
 #include "AnimInstances/DogAnimInstance.h" 
 #include "Animation/AnimMontage.h"
 
-// Timer
-#include "Engine/TimerHandle.h"
-
 ADog::ADog()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -65,19 +62,8 @@ void ADog::Tick(float DeltaTime)
 		if (DistanceToLocation <= AcceptanceRadius + 60.f) // For some reason dog stops at + 60 acceptance, possibly because of capsule
 		{ 
 			FaceToLocation(CharacterLocation, DeltaTime); 
-
-			if (!GetWorld()->GetTimerManager().IsTimerActive(AttackTimer))
-			{
-				GetWorld()->GetTimerManager().SetTimer(AttackTimer, this, &ADog::Attack, 1.0f, false);
-			}
+			Attack();
 		} 
-		else
-		{
-			if (GetWorld()->GetTimerManager().IsTimerActive(AttackTimer))
-			{
-				GetWorld()->GetTimerManager().ClearTimer(AttackTimer);
-			}
-		}
 	}
 }
 
