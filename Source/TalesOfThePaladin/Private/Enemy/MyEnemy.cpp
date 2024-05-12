@@ -60,7 +60,7 @@ void AMyEnemy::AimOffset(float DeltaTime1, float& EnemyYaw1, float& EnemyPitch1)
 {
 	if (MyCharacter && MyCharacter->GetMeshComponent())
 	{
-		FRotator DeltaRotation;
+		FRotator DeltaRotation{};
 		FVector Velocity = GetVelocity();
 		float AngularSpeed = Velocity.Size(); // Angular speed in this case
 
